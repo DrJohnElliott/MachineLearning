@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Machinelearning by DrJohnElliott</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Machinelearning</h1>
+      <h2 class="project-tagline">Coursera Data Science </h2>
+      <a href="https://github.com/DrJohnElliott/MachineLearning" class="btn">View on GitHub</a>
+      <a href="https://github.com/DrJohnElliott/MachineLearning/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/DrJohnElliott/MachineLearning/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <hr>
+
+<p>title: "Elliott Machine Learning Final Class Project"
+author: "John Elliott"
+date: "September 3, 2016"</p>
+
+<h2>
+<a id="output-word_document" class="anchor" href="#output-word_document" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>output: word_document</h2>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-c"># make this an external chunk that can be included in any file</span>
+        options(<span class="pl-v">width</span> <span class="pl-k">=</span> <span class="pl-c1">100</span>)
+        library(<span class="pl-smi">knitr</span>)
+        <span class="pl-smi">opts_chunk</span><span class="pl-k">$</span>set(<span class="pl-v">message</span> <span class="pl-k">=</span> <span class="pl-c1">F</span>, <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-c1">F</span>, <span class="pl-v">warning</span> <span class="pl-k">=</span> <span class="pl-c1">F</span>, <span class="pl-v">comment</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>, <span class="pl-v">fig.align</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>center<span class="pl-pds">'</span></span>, <span class="pl-v">dpi</span> <span class="pl-k">=</span> <span class="pl-c1">100</span>, <span class="pl-v">tidy</span> <span class="pl-k">=</span> <span class="pl-c1">F</span>, <span class="pl-v">cache.path</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>.cache/<span class="pl-pds">'</span></span>, <span class="pl-v">fig.path</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>fig/<span class="pl-pds">'</span></span>)
+
+        options(<span class="pl-v">xtable.type</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>html<span class="pl-pds">'</span></span>)
+
+        <span class="pl-smi">knit_hooks</span><span class="pl-k">$</span>set(<span class="pl-v">inline</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">x</span>) {
+                <span class="pl-k">if</span>(is.numeric(<span class="pl-smi">x</span>)) {
+                        round(<span class="pl-smi">x</span>, getOption(<span class="pl-s"><span class="pl-pds">'</span>digits<span class="pl-pds">'</span></span>))
+                } <span class="pl-k">else</span> {
+                        paste(as.character(<span class="pl-smi">x</span>), <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>, <span class="pl-pds">'</span></span>)
+                        }
+                })
+        <span class="pl-smi">knit_hooks</span><span class="pl-k">$</span>set(<span class="pl-v">plot</span> <span class="pl-k">=</span> <span class="pl-e">knitr</span><span class="pl-k">:::</span><span class="pl-smi">hook_plot_html</span>)</pre></div>
+
+<div class="highlight highlight-source-r"><pre>        setwd(<span class="pl-s"><span class="pl-pds">"</span>C:/Users/John/Desktop/R-Code/Coursera/Machine Learning/Class Project<span class="pl-pds">"</span></span>)
+        library(<span class="pl-smi">dplyr</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">ggplot2</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">lubridate</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">caret</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">rattle</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">AppliedPredictiveModeling</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">ElemStatLearn</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">pgmm</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">rpart</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+        library(<span class="pl-smi">rpart.plot</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>,<span class="pl-v">warn.conflicts</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+</pre></div>
+
+<h2>
+<a id="background-of-the-project" class="anchor" href="#background-of-the-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background of the project:</h2>
+
+<p>This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> is used to construct a model that can discern between the different classe type. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault winch makes up the <strong>classe</strong> variable.  The data experiment was published in the following paper: 
+<strong>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.</strong> and you can read more about it here: <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a> </p>
+
+<h2>
+<a id="execitive-summary-of-the-results" class="anchor" href="#execitive-summary-of-the-results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Execitive summary of the results:</h2>
+
+<p>To predict the outcome of the testing data, 3 models were developed. The first was a classification tree that used all predictor variables. It was not able to predict one of the classe types <strong>"D"</strong>. The classification tree was pruned by choosing predictor variables selected from feature plots where separation could be seen. The second model, the pruned classification tree was able to predict all classe types. The validation of the two classification trees was disappointing the first showed better accuracy but couldn't predict all classe types, both models had accuracy below 60%. A third model was created using a Random Forest method. This model yielded excellent results with the data set with an accuracy of 99%.</p>
+
+<h2>
+<a id="code" class="anchor" href="#code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Code:</h2>
+
+<h4>
+<a id="data-download" class="anchor" href="#data-download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data Download:</h4>
+
+<p>Data is downloaded from the defined URLs. The code makes a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory. </p>
+
+<div class="highlight highlight-source-r"><pre>
+        <span class="pl-smi">URL</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv<span class="pl-pds">"</span></span>,
+                 <span class="pl-s"><span class="pl-pds">"</span>https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv<span class="pl-pds">"</span></span>)
+
+        <span class="pl-smi">required_files</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>pml-training.csv<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>pml-testing.csv<span class="pl-pds">"</span></span>)
+
+        <span class="pl-k">for</span>(<span class="pl-smi">i</span> <span class="pl-k">in</span> <span class="pl-c1">1</span><span class="pl-k">:</span>length(<span class="pl-smi">URL</span>)){
+                <span class="pl-k">if</span>(<span class="pl-k">!</span>all(lapply(<span class="pl-smi">required_files</span>[<span class="pl-smi">i</span>],<span class="pl-smi">file.exists</span>)<span class="pl-k">==</span><span class="pl-c1">TRUE</span>)){ 
+                        print(<span class="pl-s"><span class="pl-pds">"</span>Required Data Files Not Found!<span class="pl-pds">"</span></span>)
+                        print(<span class="pl-s"><span class="pl-pds">"</span>Please wait while the files are downloaded<span class="pl-pds">"</span></span>)
+                        download.file(<span class="pl-smi">URL</span>[<span class="pl-smi">i</span>], <span class="pl-v">destfile</span> <span class="pl-k">=</span> <span class="pl-smi">required_files</span>[<span class="pl-smi">i</span>], <span class="pl-v">mode</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>wb<span class="pl-pds">"</span></span>)
+                }
+        }
+
+</pre></div>
+
+<h4>
+<a id="load-data-into-envioroment-reading-in-data" class="anchor" href="#load-data-into-envioroment-reading-in-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Load Data Into Envioroment (Reading In Data)</h4>
+
+<p>A check for the required data is made and if not found it is read into the environment. 
+Also "cache = TRUE" is set for the data chunk to provide data caching.</p>
+
+<div class="highlight highlight-source-r"><pre>
+        <span class="pl-k">if</span>(<span class="pl-k">!</span>exists(<span class="pl-s"><span class="pl-pds">"</span>trainingData<span class="pl-pds">"</span></span>)){ 
+                print(<span class="pl-s"><span class="pl-pds">"</span>Please Wait while dataset is loaded<span class="pl-pds">"</span></span>)
+                <span class="pl-smi">trainingData</span> <span class="pl-k">&lt;-</span> read.csv(<span class="pl-s"><span class="pl-pds">"</span>pml-training.csv<span class="pl-pds">"</span></span>, <span class="pl-v">header</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>, <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>,<span class="pl-pds">"</span></span> ,
+                                <span class="pl-v">dec</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span>,<span class="pl-v">na.strings</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>, <span class="pl-c1">NA</span>) )
+        }
+
+        <span class="pl-k">if</span>(<span class="pl-k">!</span>exists(<span class="pl-s"><span class="pl-pds">"</span>testingData<span class="pl-pds">"</span></span>)){ 
+                print(<span class="pl-s"><span class="pl-pds">"</span>Please Wait while dataset is loaded<span class="pl-pds">"</span></span>)
+                <span class="pl-smi">testingData</span> <span class="pl-k">&lt;-</span>  read.csv(<span class="pl-s"><span class="pl-pds">"</span>pml-testing.csv<span class="pl-pds">"</span></span>, <span class="pl-v">header</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>, <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>,<span class="pl-pds">"</span></span> ,
+                                <span class="pl-v">dec</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span>, <span class="pl-v">na.strings</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>, <span class="pl-c1">NA</span>) )
+        }</pre></div>
+
+<h4>
+<a id="inspection-of-the-dataset" class="anchor" href="#inspection-of-the-dataset" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inspection of the dataset</h4>
+
+<p>First we take a quick look at the data set to see what we have.</p>
+
+<div class="highlight highlight-source-r"><pre>        dim(<span class="pl-smi">testingData</span>)
+        head(<span class="pl-smi">testingData</span>[ <span class="pl-c1">3</span>,<span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">5</span>])
+        str(<span class="pl-smi">testingData</span>[<span class="pl-c1">3</span>, <span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">5</span>])
+        <span class="pl-c">#colnames(testingData)</span>
+
+        head(<span class="pl-smi">trainingData</span>[ <span class="pl-c1">3</span>,<span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">5</span>])
+        str(<span class="pl-smi">trainingData</span>[<span class="pl-c1">3</span>, <span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">5</span>])
+        <span class="pl-c">#colnames(trainingData)</span>
+</pre></div>
+
+<p>We check for incomplete data columns with Na's in the two data sets, remove incomplete variables from the population and omit first 7 columns of descriptor variables.</p>
+
+<div class="highlight highlight-source-r"><pre>
+<span class="pl-smi">testingData</span>     <span class="pl-k">&lt;-</span> <span class="pl-smi">testingData</span>[, colSums(is.na(<span class="pl-smi">testingData</span>)) <span class="pl-k">==</span> <span class="pl-c1">0</span>] 
+<span class="pl-smi">trainingData</span>    <span class="pl-k">&lt;-</span> <span class="pl-smi">trainingData</span>[, colSums(is.na(<span class="pl-smi">trainingData</span>)) <span class="pl-k">==</span> <span class="pl-c1">0</span>] 
+
+<span class="pl-smi">checknames</span>      <span class="pl-k">&lt;-</span> is.na(match(colnames(<span class="pl-smi">trainingData</span>), colnames(<span class="pl-smi">testingData</span>)))
+
+<span class="pl-smi">trainingData</span>    <span class="pl-k">&lt;-</span> <span class="pl-smi">trainingData</span>[,<span class="pl-c1">7</span><span class="pl-k">:</span><span class="pl-c1">60</span>]
+<span class="pl-smi">testingData</span>     <span class="pl-k">&lt;-</span> <span class="pl-smi">testingData</span>[,<span class="pl-c1">7</span><span class="pl-k">:</span><span class="pl-c1">60</span>]   </pre></div>
+
+<p>We create a validation subset from the training data</p>
+
+<div class="highlight highlight-source-r"><pre>
+        set.seed(<span class="pl-c1">1972</span>) 
+
+<span class="pl-smi">inTrain</span>         <span class="pl-k">&lt;-</span> createDataPartition(<span class="pl-smi">trainingData</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-v">p</span> <span class="pl-k">=</span> <span class="pl-c1">0.7</span>, <span class="pl-v">list</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)
+<span class="pl-smi">trainingData</span>    <span class="pl-k">&lt;-</span> <span class="pl-smi">trainingData</span>[<span class="pl-smi">inTrain</span>, ]
+<span class="pl-smi">validate</span>        <span class="pl-k">&lt;-</span> <span class="pl-smi">trainingData</span>[<span class="pl-k">-</span><span class="pl-smi">inTrain</span>, ]
+</pre></div>
+
+<p>Exploratory plots of the data are created to look for a subset of predictor variables. An example plot of 4 variables is shown, the process was repeated to find predictors that may improve the modeling accuracy. The list of predictors was placed in a variable named <strong>training_set</strong>.</p>
+
+<div class="highlight highlight-source-r"><pre>
+       featurePlot(<span class="pl-v">x</span> <span class="pl-k">=</span> <span class="pl-smi">trainingData</span>[, <span class="pl-c1">10</span><span class="pl-k">:</span><span class="pl-c1">13</span>], 
+            <span class="pl-v">y</span> <span class="pl-k">=</span> <span class="pl-smi">trainingData</span><span class="pl-k">$</span><span class="pl-smi">classe</span>,
+            <span class="pl-v">plot</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>ellipse<span class="pl-pds">"</span></span>,
+            <span class="pl-c">## Add a key at the top</span>
+            <span class="pl-v">auto.key</span> <span class="pl-k">=</span> <span class="pl-k">list</span>(<span class="pl-v">columns</span> <span class="pl-k">=</span> <span class="pl-c1">3</span>))
+
+<span class="pl-smi">training_set</span>    <span class="pl-k">&lt;-</span> colnames(<span class="pl-smi">trainingData</span>[c(<span class="pl-c1">10</span><span class="pl-k">:</span><span class="pl-c1">13</span>,<span class="pl-c1">37</span><span class="pl-k">:</span><span class="pl-c1">45</span>)])
+</pre></div>
+
+<h4>
+<a id="model-development-of-classification-trees" class="anchor" href="#model-development-of-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model development of Classification Trees:</h4>
+
+<h5>
+<a id="model-one" class="anchor" href="#model-one" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model One:</h5>
+
+<p>The first model is a classification tree (method = "rpart") using all predictors. The model uses the default train control method of resampling, cross validation "cv", and a fold of 10.</p>
+
+<div class="highlight highlight-source-r"><pre>
+        set.seed(<span class="pl-c1">1972</span>)
+
+<span class="pl-smi">model_1</span>         <span class="pl-k">&lt;-</span> train(as.factor(<span class="pl-smi">classe</span>) <span class="pl-k">~</span> . ,  <span class="pl-v">method</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>rpart<span class="pl-pds">"</span></span>, <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">trainingData</span>)
+
+        fancyRpartPlot(<span class="pl-smi">model_1</span><span class="pl-k">$</span><span class="pl-smi">finalModel</span>)
+</pre></div>
+
+<p>The first model was not able to discern classe type <strong>"D"</strong>, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.</p>
+
+<h5>
+<a id="model-two" class="anchor" href="#model-two" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model Two:</h5>
+
+<p>Model two also uses the default train control method of resampling, cross validation "cv", and a fold of 10.</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">model_2</span>         <span class="pl-k">&lt;-</span> train(as.factor(<span class="pl-smi">classe</span>) <span class="pl-k">~</span> <span class="pl-smi">accel_belt_y</span> <span class="pl-k">+</span> <span class="pl-smi">accel_belt_z</span> <span class="pl-k">+</span> <span class="pl-smi">magnet_belt_x</span> <span class="pl-k">+</span> <span class="pl-smi">magnet_belt_y</span> <span class="pl-k">+</span> <span class="pl-smi">accel_dumbbell_z</span> <span class="pl-k">+</span> <span class="pl-smi">magnet_dumbbell_x</span> <span class="pl-k">+</span> <span class="pl-smi">magnet_dumbbell_y</span> <span class="pl-k">+</span> <span class="pl-smi">magnet_dumbbell_z</span> <span class="pl-k">+</span> <span class="pl-smi">roll_forearm</span> <span class="pl-k">+</span> <span class="pl-smi">pitch_forearm</span> <span class="pl-k">+</span> <span class="pl-smi">yaw_forearm</span> <span class="pl-k">+</span> <span class="pl-smi">total_accel_forearm</span> <span class="pl-k">+</span> <span class="pl-smi">gyros_forearm_x</span> , <span class="pl-v">method</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>rpart<span class="pl-pds">"</span></span>, <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">trainingData</span>)
+
+
+        fancyRpartPlot(<span class="pl-smi">model_2</span><span class="pl-k">$</span><span class="pl-smi">finalModel</span>)
+
+</pre></div>
+
+<h4>
+<a id="validation-of-the-classification-trees" class="anchor" href="#validation-of-the-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validation of the Classification Trees</h4>
+
+<p>Validation of the two models was performed using the validation data that was subset ted from the training data.</p>
+
+<div class="highlight highlight-source-r"><pre>
+<span class="pl-smi">mod1_prediction</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">model_1</span>, <span class="pl-smi">validate</span>)
+<span class="pl-smi">mod2_prediction</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">model_2</span>, <span class="pl-smi">validate</span>)
+
+<span class="pl-smi">mod1_confusion</span>  <span class="pl-k">&lt;-</span> as.matrix(confusionMatrix(<span class="pl-smi">validate</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-smi">mod1_prediction</span>))
+<span class="pl-smi">mod2_confusion</span>  <span class="pl-k">&lt;-</span> as.matrix(confusionMatrix(<span class="pl-smi">validate</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-smi">mod2_prediction</span>))
+
+<span class="pl-smi">accuracy_mod1</span>   <span class="pl-k">&lt;-</span> confusionMatrix(<span class="pl-smi">validate</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-smi">mod1_prediction</span>)<span class="pl-k">$</span><span class="pl-smi">overall</span>[<span class="pl-c1">1</span>]
+<span class="pl-smi">accuracy_mod2</span>   <span class="pl-k">&lt;-</span> confusionMatrix(<span class="pl-smi">validate</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-smi">mod2_prediction</span>)<span class="pl-k">$</span><span class="pl-smi">overall</span>[<span class="pl-c1">1</span>]
+</pre></div>
+
+<h4>
+<a id="predictions-made-with-classification-trees" class="anchor" href="#predictions-made-with-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Predictions made with Classification Trees:</h4>
+
+<div class="highlight highlight-source-r"><pre>
+<span class="pl-smi">mod1_predict</span>    <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">model_1</span>, <span class="pl-smi">testingData</span>)
+<span class="pl-smi">mod2_predict</span>    <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">model_2</span>, <span class="pl-smi">testingData</span>)
+</pre></div>
+
+<p>Model 1 has better accuracy at <code>r accuracy_mod1</code> compared to model 2 accuracy of <code>r accuracy_mod2</code> . With both models having ac curacies below 60% another modelling method was explored.</p>
+
+<h4>
+<a id="model-development-of-random-forests" class="anchor" href="#model-development-of-random-forests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model development of Random Forests</h4>
+
+<p>The last model explored is a Random Forest (method = "rf") using all predictor variables. </p>
+
+<h5>
+<a id="model-three" class="anchor" href="#model-three" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model Three:</h5>
+
+<p>For the training The train control used was k fold cross validation "cv", with a k fold value of 5. </p>
+
+<div class="highlight highlight-source-r"><pre>
+<span class="pl-smi">myControl</span>       <span class="pl-k">&lt;-</span> trainControl(<span class="pl-v">method</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>cv<span class="pl-pds">"</span></span>, <span class="pl-v">number</span> <span class="pl-k">=</span> <span class="pl-c1">5</span>)
+
+<span class="pl-smi">mod3</span>            <span class="pl-k">&lt;-</span> train(as.factor(<span class="pl-smi">classe</span>) <span class="pl-k">~</span> .,<span class="pl-v">method</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>rf<span class="pl-pds">"</span></span>,<span class="pl-v">trControl</span><span class="pl-k">=</span><span class="pl-smi">myControl</span>,<span class="pl-v">data</span><span class="pl-k">=</span><span class="pl-smi">trainingData</span>)
+</pre></div>
+
+<h4>
+<a id="validation-of-the-random-forest" class="anchor" href="#validation-of-the-random-forest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validation of the Random Forest</h4>
+
+<p>Validation of the Random Forest model was performed using the validation data that was subset ted from the training data.</p>
+
+<div class="highlight highlight-source-r"><pre>
+<span class="pl-smi">val_predict</span>     <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">mod3</span>, <span class="pl-smi">validate</span>)
+<span class="pl-smi">My_Confusion</span>    <span class="pl-k">&lt;-</span> as.matrix(confusionMatrix(<span class="pl-smi">validate</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-smi">val_predict</span>))
+<span class="pl-smi">accuracy_mod3</span>   <span class="pl-k">&lt;-</span> confusionMatrix(<span class="pl-smi">validate</span><span class="pl-k">$</span><span class="pl-smi">classe</span>, <span class="pl-smi">val_predict</span>)<span class="pl-k">$</span><span class="pl-smi">overall</span>[<span class="pl-c1">1</span>]      
+
+</pre></div>
+
+<p>The Random Forest model is able to predict all classe types and has an accuracy approaching 100% based on the validation data. </p>
+
+<div class="highlight highlight-source-r"><pre>
+<span class="pl-smi">mod3_predict</span>    <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">mod3</span>, <span class="pl-smi">testingData</span>)
+</pre></div>
+
+<h4>
+<a id="model-comparison" class="anchor" href="#model-comparison" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model Comparison</h4>
+
+<p>Tables of the accuracy and prediction values are created for model comparison.</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">Accuracy_Table</span>          <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-k">matrix</span>(<span class="pl-v">nrow</span><span class="pl-k">=</span><span class="pl-c1">3</span>,<span class="pl-v">ncol</span><span class="pl-k">=</span><span class="pl-c1">2</span>))
+<span class="pl-smi">Method</span>                  <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>Classification Tree<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Pruned Tree<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Random Forest<span class="pl-pds">"</span></span>)
+rownames(<span class="pl-smi">Accuracy_Table</span>)<span class="pl-k">&lt;-</span>c(<span class="pl-s"><span class="pl-pds">"</span>Model 1<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Model 2<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Model 3<span class="pl-pds">"</span></span>)
+colnames(<span class="pl-smi">Accuracy_Table</span>)<span class="pl-k">&lt;-</span> c( <span class="pl-s"><span class="pl-pds">"</span>Method Used<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Accuracy<span class="pl-pds">"</span></span>)
+<span class="pl-smi">Accuracy_Table</span>[,<span class="pl-c1">1</span>]      <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">Method</span>)
+<span class="pl-smi">Accuracy_Table</span>[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>]     <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">accuracy_mod1</span>)
+<span class="pl-smi">Accuracy_Table</span>[<span class="pl-c1">2</span>,<span class="pl-c1">2</span>]     <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">accuracy_mod2</span>)
+<span class="pl-smi">Accuracy_Table</span>[<span class="pl-c1">3</span>,<span class="pl-c1">2</span>]     <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">accuracy_mod3</span>)
+
+<span class="pl-smi">Predict_Table</span>           <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-k">matrix</span>(<span class="pl-v">nrow</span><span class="pl-k">=</span><span class="pl-c1">20</span>,<span class="pl-v">ncol</span><span class="pl-k">=</span><span class="pl-c1">3</span>))
+colnames(<span class="pl-smi">Predict_Table</span>) <span class="pl-k">&lt;-</span>c(<span class="pl-s"><span class="pl-pds">"</span>Model 1<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Model 2<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Model 3<span class="pl-pds">"</span></span>)
+<span class="pl-smi">Predict_Table</span>[,<span class="pl-c1">1</span>]       <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">mod1_predict</span>)
+<span class="pl-smi">Predict_Table</span>[,<span class="pl-c1">2</span>]       <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">mod2_predict</span>)
+<span class="pl-smi">Predict_Table</span>[,<span class="pl-c1">3</span>]       <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">mod3_predict</span>)
+
+(<span class="pl-smi">Accuracy_Table</span>)
+(<span class="pl-smi">Predict_Table</span>)
+</pre></div>
+
+<h4>
+<a id="plots-of-the-confusion-matrix-for-each-model" class="anchor" href="#plots-of-the-confusion-matrix-for-each-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plots of the Confusion Matrix for each model</h4>
+
+<div class="highlight highlight-source-r"><pre>
+library(<span class="pl-smi">reshape2</span>)
+<span class="pl-smi">melted_mod1_confusion</span>   <span class="pl-k">&lt;-</span> melt(<span class="pl-smi">mod1_confusion</span>)
+<span class="pl-smi">melted_mod2_confusion</span>   <span class="pl-k">&lt;-</span> melt(<span class="pl-smi">mod2_confusion</span>)
+<span class="pl-smi">melted_My_Confusion</span>     <span class="pl-k">&lt;-</span> melt(<span class="pl-smi">My_Confusion</span>)
+colnames( <span class="pl-smi">melted_mod1_confusion</span> ) <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>Classe<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Predicted<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>)
+colnames( <span class="pl-smi">melted_mod2_confusion</span> ) <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>Classe<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Predicted<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>)
+colnames( <span class="pl-smi">melted_My_Confusion</span> ) <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>Classe<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Predicted<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>)
+library(<span class="pl-smi">gridExtra</span>)
+<span class="pl-smi">g1</span> <span class="pl-k">&lt;-</span>ggplot(<span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">melted_mod1_confusion</span>, aes(<span class="pl-v">x</span><span class="pl-k">=</span><span class="pl-smi">Classe</span>, <span class="pl-v">y</span><span class="pl-k">=</span><span class="pl-smi">Predicted</span>, <span class="pl-v">fill</span><span class="pl-k">=</span><span class="pl-smi">value</span>)) <span class="pl-k">+</span> 
+  geom_tile() <span class="pl-k">+</span> ggtitle(<span class="pl-s"><span class="pl-pds">"</span>Model 1<span class="pl-pds">"</span></span>) <span class="pl-k">+</span> coord_fixed(<span class="pl-v">ratio</span><span class="pl-k">=</span><span class="pl-c1">1</span>)
+
+<span class="pl-smi">g2</span> <span class="pl-k">&lt;-</span>ggplot(<span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">melted_mod2_confusion</span>, aes(<span class="pl-v">x</span><span class="pl-k">=</span><span class="pl-smi">Classe</span>, <span class="pl-v">y</span><span class="pl-k">=</span><span class="pl-smi">Predicted</span>, <span class="pl-v">fill</span><span class="pl-k">=</span><span class="pl-smi">value</span>)) <span class="pl-k">+</span> 
+  geom_tile() <span class="pl-k">+</span> ggtitle(<span class="pl-s"><span class="pl-pds">"</span>Model 2<span class="pl-pds">"</span></span>) <span class="pl-k">+</span> coord_fixed(<span class="pl-v">ratio</span><span class="pl-k">=</span><span class="pl-c1">1</span>)
+
+<span class="pl-smi">g3</span> <span class="pl-k">&lt;-</span> ggplot(<span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">melted_My_Confusion</span>, aes(<span class="pl-v">x</span><span class="pl-k">=</span><span class="pl-smi">Classe</span>, <span class="pl-v">y</span><span class="pl-k">=</span><span class="pl-smi">Predicted</span>, <span class="pl-v">fill</span><span class="pl-k">=</span><span class="pl-smi">value</span>)) <span class="pl-k">+</span> 
+  geom_tile() <span class="pl-k">+</span> ggtitle(<span class="pl-s"><span class="pl-pds">"</span>Model 3<span class="pl-pds">"</span></span>) <span class="pl-k">+</span> coord_fixed(<span class="pl-v">ratio</span><span class="pl-k">=</span><span class="pl-c1">1</span>)
+
+grid.arrange(<span class="pl-smi">g1</span>, <span class="pl-smi">g2</span>, <span class="pl-smi">g3</span>, <span class="pl-v">ncol</span> <span class="pl-k">=</span> <span class="pl-c1">3</span>)
+</pre></div>
+
+<p>The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type "D". </p>
+
+<h2>
+<a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary and Conclusions</h2>
+
+<p>The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. </p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/DrJohnElliott/MachineLearning">Machinelearning</a> is maintained by <a href="https://github.com/DrJohnElliott">DrJohnElliott</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
