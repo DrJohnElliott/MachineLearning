@@ -5,17 +5,29 @@ date: "August 30, 2016"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F}
+# make this an external chunk that can be included in any file
+options(width = 100)
+library(knitr)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100, tidy = F, cache.path = '.cache/', fig.path = 'fig/')
+
+options(xtable.type = 'html')
+knit_hooks$set(inline = function(x) {
+  if(is.numeric(x)) {
+    round(x, getOption('digits'))
+  } else {
+    paste(as.character(x), collapse = ', ')
+  }
+})
+knit_hooks$set(plot = knitr:::hook_plot_html)
 ```
 
-Set working directory and load required libraries
-```{r load_packages, echo=TRUE}
+
+```{r load_packages, echo=FALSE}
         setwd("C:/Users/John/Desktop/R-Code/Coursera/Machine Learning/Class Project")
         library(dplyr, quietly = TRUE,warn.conflicts = FALSE)
         library(ggplot2, quietly = TRUE,warn.conflicts = FALSE)
         library(lubridate, quietly = TRUE,warn.conflicts = FALSE)
-        
         library(caret, quietly = TRUE,warn.conflicts = FALSE)
         library(rattle, quietly = TRUE,warn.conflicts = FALSE)
         library(AppliedPredictiveModeling, quietly = TRUE,warn.conflicts = FALSE)
@@ -26,31 +38,33 @@ Set working directory and load required libraries
         
 ```
 
+## Background of the project:
+
+This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <http://groupware.les.inf.puc-rio.br/har> is used to construct a model that can discern between the different classe type. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault winch makes up the **classe** variable.  The data experiment was published in the following paper: 
+**Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.** and you can read more about it here: <http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises> 
+
+## Execitive summary of the results:
+
+To predict the outcome of the testing data, 3 models were developed. The first was a classification tree that used all predictor variables. It was not able to predict one of the classe types **"D"**. The classification tree was pruned by choosing predictor variables selected from feature plots where separation could be seen. The second model, the pruned classification tree was able to predict all classe types. The validation of the two classification trees was disappointing the first showed better accuracy but couldn't predict all classe types, both models had accuracy below 60%. A third model was created using a Random Forest method. This model yielded excellent results with the data set with an accuracy of 99%.
 
 
+## Code:
 
-
-####Data Download
-First a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory. 
+####Data Download:
+Data is downloaded from the defined URLs. The code makes a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory. 
 ```{r  download_data, echo=TRUE }
         
-        URL <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
-        required_training_file <- "pml-training.csv"
+        URL <- c("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv",
+                 "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv")
 
-        if(!all(lapply(required_training_file,file.exists)==TRUE)){ 
-                print("Required Data Files Not Found!")
-                print("Please wait while the files are downloaded")
-                download.file(URL, destfile = required_training_file, mode="wb")
-        }
-        
-        
-        URL <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
-        required_testing_file <- "pml-testing.csv"
+        required_files <- c("pml-training.csv", "pml-testing.csv")
 
-        if(!all(lapply(required_testing_file,file.exists)==TRUE)){ 
-                print("Required Data Files Not Found!")
-                print("Please wait while the files are downloaded")
-                download.file(URL, destfile = required_testing_file, mode="wb")
+        for(i in 1:length(URL)){
+                if(!all(lapply(required_files[i],file.exists)==TRUE)){ 
+                        print("Required Data Files Not Found!")
+                        print("Please wait while the files are downloaded")
+                        download.file(URL[i], destfile = required_files[i], mode="wb")
+                }
         }
         
         
@@ -65,31 +79,23 @@ Also "cache = TRUE" is set for the data chunk to provide data caching.
 
         if(!exists("trainingData")){ 
                 print("Please Wait while dataset is loaded")
-                trainingData <- read.csv(required_training_file, header = TRUE, sep = "," ,dec = ".",na.strings = c("", NA) )
+                trainingData <- read.csv("pml-training.csv", header = TRUE, sep = "," ,
+                                dec = ".",na.strings = c("", NA) )
         }
-
 
         if(!exists("testingData")){ 
                 print("Please Wait while dataset is loaded")
-                testingData <- read.csv(required_testing_file, header = TRUE, sep = "," ,dec = ".", na.strings = c("", NA) )
+                testingData <-  read.csv("pml-testing.csv", header = TRUE, sep = "," ,
+                                dec = ".", na.strings = c("", NA) )
         }
-
-
-
 ```
 
 
-####Data Inspection
+#### Inspection of the dataset
 
 First we take a quick look at the data set to see what we have.
-```{r get_set_size, echo=TRUE}
-        set_size <- dim(testingData)
-```
-- The data set has **`r set_size[1]`** rows and **`r set_size[2]`** columns.
-
-Then we look at a glimpse first few rows and columns of the data set and there structure
-
-```{r get_set_info, echo=TRUE}
+```{r get_set_size, echo=FALSE}
+        dim(testingData)
         head(testingData[ ,1:15])
         str(testingData[, 1:15])
         colnames(testingData)
@@ -99,144 +105,150 @@ Then we look at a glimpse first few rows and columns of the data set and there s
         colnames(trainingData)
          
 ```
- 
-We check for Na's in the two data sets, remove blank columns from the population and omit first 7 columns of discriptor data.
+
+We check for incomplete data columns with Na's in the two data sets, remove incomplete variables from the population and omit first 7 columns of descriptor variables.
 ```{r check_NAs, echo=TRUE}
 
-testingData <- testingData[, colSums(is.na(testingData)) == 0] 
-trainingData <- trainingData[, colSums(is.na(trainingData)) == 0] 
+testingData     <- testingData[, colSums(is.na(testingData)) == 0] 
+trainingData    <- trainingData[, colSums(is.na(trainingData)) == 0] 
 
-checknames <- is.na(match(colnames(trainingData), colnames(testingData)))
+checknames      <- is.na(match(colnames(trainingData), colnames(testingData)))
 
-trainingData <- trainingData[,7:60]
-     testingData <- testingData[,7:60]   
+trainingData    <- trainingData[,7:60]
+testingData     <- testingData[,7:60]   
 ```
 
 We create a validation subset from the training data
 ```{r validation, echo=TRUE}
      
-set.seed(1972) 
-inTrain <- createDataPartition(trainingData$classe, p = 0.7, list = FALSE)
-trainingData <- trainingData[inTrain, ]
-validate <- trainingData[-inTrain, ]
+        set.seed(1972) 
+
+inTrain         <- createDataPartition(trainingData$classe, p = 0.7, list = FALSE)
+trainingData    <- trainingData[inTrain, ]
+validate        <- trainingData[-inTrain, ]
 
 ```        
-- The  data has: **`r a[3]`** Na's and property damage data has: **`r b[3]`** Na's.
 
-Exploritory plots of the data are created to look for a subset of predictors that may improve the modeling accuracy.
+Exploratory plots of the data are created to look for a subset of predictor variables. An example plot of 4 variables is shown, the process was repeated to find predictors that may improve the modeling accuracy. The list of predictors was placed in a variable named **training_set**.
 
 ```{r Plot_Data, echo=False}
-                                                # one var had seperation
+                                              
        featurePlot(x = trainingData[, 10:13], 
             y = trainingData$classe,
             plot = "ellipse",
             ## Add a key at the top
             auto.key = list(columns = 3))
 
- featurePlot(x = trainingData[, 37:41],
-            y = trainingData$classe,
-            plot = "ellipse",
-            ## Add a key at the top
-            auto.key = list(columns = 3))
-
-
-featurePlot(x = trainingData[, 42:45],
-            y = trainingData$classe,
-            plot = "ellipse",
-            ## Add a key at the top
-            auto.key = list(columns = 5))
-
-
-training_set <- colnames(trainingData[c(10:13,37:45)])
-
-transparentTheme(trans = .9)
-featurePlot(x = trainingData[, 37:40],
-                  y = trainingData$classe,
-                  plot = "density",
-                  ## Pass in options to xyplot() to 
-                  ## make it prettier
-                  scales = list(x = list(relation="free"),
-                                y = list(relation="free")),
-                  adjust = 1.5,
-                  pch = "|",
-                  layout = c(4, 1),
-                  auto.key = list(columns = 5))
-
-gbmImp <- varImp(trainingData, scale = FALSE)
+training_set    <- colnames(trainingData[c(10:13,37:45)])
 
 ```
 
+#### Model development of Classification Trees:
 
+##### Model One:
 
+The first model is a classification tree (method = "rpart") using all predictors.
+```{r model_1, echo=TRUE  }
 
+        set.seed(1972)
 
+model_1         <- train(as.factor(classe) ~ . ,  method = "rpart", data = trainingData)
 
+        plot(model_1$finalModel, uniform=TRUE, main="Classification Tree")
+        text(model_11$finalModel, use.n = TRUE, all = TRUE, cex = 0.8)
+        fancyRpartPlot(model_1$finalModel)
 
- 
-The full data set is reduced by selecting just the columns required for this report. 
-```{r select_data, echo=TRUE  }
+```
 
-set.seed(1972)
+The first model was not able to discern classe type **"D"**, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.
 
-mod1 <- train(as.factor(classe) ~ . ,  method = "rpart", data = trainingData)
+##### Model Two:
 
-mod1$finalModel
+```{r model_2, echo=TRUE}
+model_2         <- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)
 
+        plot(model_2$finalModel, uniform=TRUE, main="Classification Tree")
+        text(model_2$finalModel, use.n = TRUE, all = TRUE, cex = 0.8)
+        fancyRpartPlot(model_2$finalModel)
 
-mod2 <- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y +    
-accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)
+```
 
-mod2$finalModel
+#### Validation of the Classification Trees
 
-print(mod1)
-print(mod2)
+Validation of the two models was performed using the validation data that was subset ted from the training data.
 
-plot(mod2$finalModel, uniform=TRUE, main="Classification Tree")
-fancyRpartPlot(fit_rpart$finalModel)
-text(mod2$finalModel, use.n = TRUE, all = TRUE, cex = 0.8)
-
-fancyRpartPlot(mod1$finalModel)
-fancyRpartPlot(mod2$finalModel)
-
+```{r, validation_1_2, echo=TRUE}
 
 mod1_prediction <- predict(mod1, validate)
 mod2_prediction <- predict(mod2, validate)
 
+mod1_confusion  <- confusionMatrix(validate$classe, mod1_prediction)
+mod2_confusion  <- confusionMatrix(validate$classe, mod2_prediction)
 
+accuracy_mod1   <- mod1_confusion$overall[1]
+accuracy_mod2   <- mod2_confusion$overall[1]
 
-mod1_confusion <- confusionMatrix(validate$classe, mod1_prediction)
-mod2_confusion <- confusionMatrix(validate$classe, mod2_prediction)
+print("Model One")
+mod1_confusion[2]
+accuracy_mod1
 
-
-(accuracy_mod1 <- mod1_confusion$overall[1])
-(accuracy_mod2 <- mod2_confusion$overall[1])
-
+print("Model Two")
+mod2_confusion[2]
+accuracy_mod2
 
 ```
 
-The variable names are given descriptive names 
-```{r clean_Names, echo=TRUE }
+#### Predictions made with Classification Trees:
+
+```{r, prediction_1_2, echo=TRUE}
+
+        predict(model_1, testingData)
+        predict(model_2, testingData)
+
+```
+
+Model 1 has better accuracy at `r accuracy_mod1` compared to model 2 accuracy of `r accuracy_mod2` . With both models having ac curacies below 60% another modelling method was explored.
+
+#### Model development of Random Forests 
+
+The last model explored is a Random Forest (method = "rf") using all predictor variables. 
+
+##### Model Three:
+
+```{r model_3, echo=TRUE }
+
+myControl       <- trainControl(method = "cv", number = 5)
+
+mod3            <- train(as.factor(classe) ~ .,method="rf",trControl=myControl,data=trainingData)
+
+```
+
+#### Validation of the Random Forest
+
+Validation of the Random Forest model was performed using the validation data that was subset ted from the training data.
+
+```{r, validate_3, echo=TRUE}
+
+val_predict     <- predict(mod3, validate)
+My_Confusion    <- confusionMatrix(validate$classe, val_predict)
         
+        My_Confusion$overall[3]
+        My_Confusion[2]
 
-myControl <- trainControl(method = "cv", number = 5)
+```
 
+The Random Forest model is able to predict all classe types and has an accuracy approaching 100% based on the validation data. 
 
+```{r, mod3_prediction, echo=TRUE}
 
-mod3 <- train(as.factor(classe) ~ .,method="rf",trControl=myControl,data=trainingData)
-
-con_predict <- predict(mod3, validate)
-accuracy <- con_predict$overall[1]
-(My_Confusion <- confusionMatrix(validate$classe, con_predict))
-(accuracy <- My_Confusion$overall[1])
-
-
-
-
-(predict(mod3, testingData))
+        predict(mod3, testingData)
 
 # [1] B A B A A E D B A A B C B A E E A B B B
-#Levels: A B C D E
 
 
-  
 ```
+
+
+## Conclusions
+The random Forest model out performed the Classification Tree model by leaps and bounds. The results are only based on the data set the models were trained on and it is expected the results would be different for data collected under different circumstances and the individuals who performed the exercises.
+
