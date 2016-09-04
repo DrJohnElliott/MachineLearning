@@ -19,23 +19,39 @@
     </section>
 
     <section class="main-content">
-      <p>Machine Learning 
-Final Class Project
-John Elliott</p>
+      <h1>
+<a id="machine-learning" class="anchor" href="#machine-learning" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Machine Learning</h1>
 
-<p>September 3, 2016</p>
+<h1>
+<a id="final-class-project" class="anchor" href="#final-class-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Final Class Project</h1>
 
-<p><strong>Background of the project:</strong>
-This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> is used to construct a model that can discern between the outcome variable “classe”. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault which makes up the classe variable. The data experiment was published in the following paper:</p>
+<h1>
+<a id="john-elliott" class="anchor" href="#john-elliott" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>John Elliott</h1>
+
+<h3>
+<a id="-september-3-2016" class="anchor" href="#-september-3-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>## September 3, 2016</h3>
+
+<h2>
+<a id="background-of-the-project" class="anchor" href="#background-of-the-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Background of the project:</strong>
+</h2>
+
+<p>This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> is used to construct a model that can discern between the outcome variable “classe”. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault which makes up the classe variable. The data experiment was published in the following paper:</p>
 
 <p>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013. and you can read more about it here: <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a></p>
 
-<p><strong>Executive summary of the results:</strong>
-To predict the outcome of the testing data, 3 models were developed. The first model, “Model 1” was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, “D”. Therefore another Classification Tree model was created, “Model 2” by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created “Model 3” using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.</p>
+<h2>
+<a id="executive-summary-of-the-results" class="anchor" href="#executive-summary-of-the-results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Executive summary of the results:</strong>
+</h2>
 
-<p><strong>Code:</strong></p>
+<p>To predict the outcome of the testing data, 3 models were developed. The first model, “Model 1” was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, “D”. Therefore another Classification Tree model was created, “Model 2” by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created “Model 3” using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.</p>
 
-<p><strong>Data Download:</strong></p>
+<h2>
+<a id="code" class="anchor" href="#code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Code:</strong>
+</h2>
+
+<h3>
+<a id="data-download" class="anchor" href="#data-download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Data Download:</strong>
+</h3>
 
 <p>Data is downloaded from the defined URLs. The code makes a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory.</p>
 
@@ -57,21 +73,22 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p>A check for the required data is made and if not found it is read into the environment. Also “cache = TRUE” is set for the data chunk to provide data caching.</p>
 
-<pre><code>    if(!exists("trainingData")){ 
-            print("Please Wait while dataset is loaded")
-            trainingData &lt;- read.csv("pml-training.csv", header = TRUE, sep = "," ,
-                            dec = ".",na.strings = c("", NA) )
-    }
+<pre><code>    `if(!exists("trainingData")){ `
+            `print("Please Wait while dataset is loaded")`
+            `trainingData &lt;- read.csv("pml-training.csv", header = TRUE, sep = "," ,`
+                            `dec = ".",na.strings = c("", NA) )`
+    `}`
+
+    `if(!exists("testingData")){ `
+            `print("Please Wait while dataset is loaded")`
+            `testingData &lt;-  read.csv("pml-testing.csv", header = TRUE, sep = "," ,`
+                            `dec = ".", na.strings = c("", NA) )`
+    `}`
 </code></pre>
 
-<p>[1] "Please Wait while dataset is loaded"
-        if(!exists("testingData")){ 
-                print("Please Wait while dataset is loaded")
-                testingData &lt;-  read.csv("pml-testing.csv", header = TRUE, sep = "," ,
-                                dec = ".", na.strings = c("", NA) )
-        }</p>
-
-<p><strong>Inspection of the data set</strong></p>
+<h2>
+<a id="inspection-of-the-data-set" class="anchor" href="#inspection-of-the-data-set" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Inspection of the data set</strong>
+</h2>
 
 <p>First we take a quick look at the data set to see what we have.</p>
 
@@ -114,7 +131,9 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 <code>trainingData    &lt;- trainingData[inTrain, ]</code>
 <code>validate        &lt;- trainingData[-inTrain, ]</code></p>
 
-<p><strong>Exploratory plots</strong></p>
+<h2>
+<a id="exploratory-plots" class="anchor" href="#exploratory-plots" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Exploratory plots</strong>
+</h2>
 
 <p>Feature plots of the data are created to look for a subset of predictor variables. An example plot of 4 variables is shown, the process was repeated to find predictors that may improve the modeling accuracy. The list of predictors was placed in a variable named training_set.</p>
 
@@ -127,9 +146,13 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Rplot.png?raw=TRUE" alt="Feature Plot of predictors"></p>
 
-<p><strong>Model development of Classification Trees:</strong></p>
+<h1>
+<a id="model-development-of-classification-trees" class="anchor" href="#model-development-of-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model development of Classification Trees:</strong>
+</h1>
 
-<p><strong>Model One:</strong></p>
+<h2>
+<a id="model-one" class="anchor" href="#model-one" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model One:</strong>
+</h2>
 
 <p>The first model is a classification tree (method = “rpart”) using all predictors. The model uses the default train control method of resampling, cross validation “cv”, and a fold of 10.</p>
 
@@ -145,7 +168,9 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p>The first model was not able to discern classe type “D”, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.</p>
 
-<p><strong>Model Two:</strong></p>
+<h2>
+<a id="model-two" class="anchor" href="#model-two" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model Two:</strong>
+</h2>
 
 <p>Model two also uses the default train control method of resampling, cross validation “cv”, and a fold of 10.</p>
 
@@ -156,7 +181,9 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_2.png?raw=true" alt="Model 2: Clasification Tree with sub-setted predictors"></p>
 
-<p><strong>Validation of the Classification Trees</strong></p>
+<h3>
+<a id="validation-of-the-classification-trees" class="anchor" href="#validation-of-the-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Validation of the Classification Trees</strong>
+</h3>
 
 <p>Validation of the two models was performed using the validation data that was sub-setted from the training data.</p>
 
@@ -175,18 +202,24 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p>Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.4779554 . With both models having accuracy below 60% another modelling method was explored.</p>
 
-<p><strong>Model development of Random Forests</strong></p>
+<h2>
+<a id="model-development-of-random-forests" class="anchor" href="#model-development-of-random-forests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model development of Random Forests</strong>
+</h2>
 
 <p>The last model explored is a Random Forest (method = “rf”) using all predictor variables.</p>
 
-<p><strong>Model Three:</strong></p>
+<h2>
+<a id="model-three" class="anchor" href="#model-three" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model Three:</strong>
+</h2>
 
 <p>For the training The train control used was k fold cross validation “cv”, with a k fold value of 5.</p>
 
 <p><code>myControl       &lt;- trainControl(method = "cv", number = 5)</code>
 <code>mod3            &lt;- train(as.factor(classe) ~ .,method="rf",trControl=myControl,data=trainingData)</code></p>
 
-<p><strong>Validation of the Random Forest</strong></p>
+<h2>
+<a id="validation-of-the-random-forest" class="anchor" href="#validation-of-the-random-forest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Validation of the Random Forest</strong>
+</h2>
 
 <p>Validation of the Random Forest model was performed using the validation data that was sub-setted from the training data.</p>
 
@@ -198,7 +231,9 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p><code>mod3_predict    &lt;- predict(mod3, testingData)</code></p>
 
-<p><strong>Model Comparison</strong></p>
+<h2>
+<a id="model-comparison" class="anchor" href="#model-comparison" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model Comparison</strong>
+</h2>
 
 <p>Tables of the accuracy and prediction values are created for model comparison.</p>
 
@@ -219,21 +254,25 @@ To predict the outcome of the testing data, 3 models were developed. The first m
 
 <p><code>(Accuracy_Table)</code></p>
 
+<blockquote>
 <pre><code>            Method Used  Accuracy
 </code></pre>
 
 <p>Model 1 Classification Tree 0.5661337
 Model 2     Sub-setted Tree 0.4779554
 Model 3       Random Forest 1.0000000</p>
+</blockquote>
 
 <p><code>(Predict_Table)</code></p>
 
+<blockquote>
 <pre><code>    V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20
 </code></pre>
 
 <p>Model 1  A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C
 Model 2  C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D
 Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</p>
+</blockquote>
 
 <p>Plots of the Confusion Matrix for each model</p>
 
@@ -260,7 +299,9 @@ Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</
 
 <p>The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type “D”.</p>
 
-<p><strong>Summary and Conclusions:</strong></p>
+<h2>
+<a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Summary and Conclusions:</strong>
+</h2>
 
 <p>The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises.</p>
 
