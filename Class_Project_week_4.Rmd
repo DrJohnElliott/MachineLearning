@@ -41,12 +41,13 @@ output: html_document
 
 ## Background of the project:
 
-This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <http://groupware.les.inf.puc-rio.br/har> is used to construct a model that can discern between the different classe type. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault winch makes up the **classe** variable.  The data experiment was published in the following paper: 
+This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <http://groupware.les.inf.puc-rio.br/har> is used to construct a model that can discern between the outcome variable "classe".  The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault which makes up the **classe** variable.  The data experiment was published in the following paper: 
+
 **Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.** and you can read more about it here: <http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises> 
 
-## Execitive summary of the results:
+## Executive summary of the results:
 
-To predict the outcome of the testing data, 3 models were developed. The first was a classification tree that used all predictor variables. It was not able to predict one of the classe types **"D"**. The classification tree was pruned by choosing predictor variables selected from feature plots where separation could be seen. The second model, the pruned classification tree was able to predict all classe types. The validation of the two classification trees was disappointing the first showed better accuracy but couldn't predict all classe types, both models had accuracy below 60%. A third model was created using a Random Forest method. This model yielded excellent results with the data set with an accuracy of 99%.
+To predict the outcome of the testing data, 3 models were developed. The first model, "Model 1" was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, **"D"**. Therefore another Classification Tree model was created, "Model 2" by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created "Model 3" using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.
 
 
 ## Code:
@@ -95,15 +96,13 @@ Also "cache = TRUE" is set for the data chunk to provide data caching.
 #### Inspection of the dataset
 
 First we take a quick look at the data set to see what we have.
-```{r get_set_size, echo=FALSE}
+```{r get_set_size, echo=TRUE}
         dim(testingData)
         head(testingData[ 3,1:5])
         str(testingData[3, 1:5])
-        #colnames(testingData)
-        
         head(trainingData[ 3,1:5])
         str(trainingData[3, 1:5])
-        #colnames(trainingData)
+        
          
 ```
 
@@ -130,9 +129,11 @@ validate        <- trainingData[-inTrain, ]
 
 ```        
 
-Exploratory plots of the data are created to look for a subset of predictor variables. An example plot of 4 variables is shown, the process was repeated to find predictors that may improve the modeling accuracy. The list of predictors was placed in a variable named **training_set**.
+#####Exploratory plots 
 
-```{r Plot_Data, echo=FALSE}
+Feature plots of the data are created to look for a subset of predictor variables. An example plot of 4 variables is shown, the process was repeated to find predictors that may improve the modeling accuracy. The list of predictors was placed in a variable named **training_set**.
+
+```{r Plot_Data, echo=TRUE}
                                               
        featurePlot(x = trainingData[, 10:13], 
             y = trainingData$classe,
@@ -165,16 +166,14 @@ The first model was not able to discern classe type **"D"**, the alternate set o
 Model two also uses the default train control method of resampling, cross validation "cv", and a fold of 10.
 ```{r model_2, echo=TRUE, cache = TRUE}
 model_2         <- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)
-
         
         fancyRpartPlot(model_2$finalModel)
         
-
 ```
 
 #### Validation of the Classification Trees
 
-Validation of the two models was performed using the validation data that was subset ted from the training data.
+Validation of the two models was performed using the validation data that was sub-setted from the training data.
 
 ```{r, validation_1_2, echo=TRUE}
 
@@ -198,7 +197,7 @@ mod2_predict    <- predict(model_2, testingData)
 
 ```
 
-Model 1 has better accuracy at `r accuracy_mod1` compared to model 2 accuracy of `r accuracy_mod2` . With both models having ac curacies below 60% another modelling method was explored.
+Model 1 has better accuracy at `r accuracy_mod1` compared to model 2 accuracy of `r accuracy_mod2` . With both models having accuracy below 60% another modelling method was explored.
 
 #### Model development of Random Forests 
 
@@ -216,14 +215,13 @@ mod3            <- train(as.factor(classe) ~ .,method="rf",trControl=myControl,d
 
 #### Validation of the Random Forest
 
-Validation of the Random Forest model was performed using the validation data that was subset ted from the training data.
+Validation of the Random Forest model was performed using the validation data that was sub-setted from the training data.
 
 ```{r, validate_3, echo=TRUE}
 
 val_predict     <- predict(mod3, validate)
 My_Confusion    <- as.matrix(confusionMatrix(validate$classe, val_predict))
 accuracy_mod3   <- confusionMatrix(validate$classe, val_predict)$overall[1]      
-        
 
 ```
 
@@ -241,7 +239,7 @@ mod3_predict    <- predict(mod3, testingData)
 Tables of the accuracy and prediction values are created for model comparison.
 ```{r, compare_models, echo=TRUE}
 Accuracy_Table          <- as.data.frame(matrix(nrow=3,ncol=2))
-Method                  <- c("Classification Tree", "Pruned Tree", "Random Forest")
+Method                  <- c("Classification Tree", "Sub-setted Tree", "Random Forest")
 rownames(Accuracy_Table)<-c("Model 1", "Model 2", "Model 3")
 colnames(Accuracy_Table)<- c( "Method Used", "Accuracy")
 Accuracy_Table[,1]      <- as.data.frame(Method)
@@ -251,9 +249,9 @@ Accuracy_Table[3,2]     <- as.data.frame(accuracy_mod3)
 
 Predict_Table           <- as.data.frame(matrix(nrow=3,ncol=20))
 rownames(Predict_Table) <-c("Model 1", "Model 2", "Model 3")
-Predict_Table[1, ]       <- as.data.frame(mod1_predict)
-Predict_Table[2, ]       <- as.data.frame(mod2_predict)
-Predict_Table[3, ]       <- as.data.frame(mod3_predict)
+Predict_Table[1, ]       <- mod1_predict
+Predict_Table[2, ]       <- mod2_predict
+Predict_Table[3, ]       <- mod3_predict
 
 (Accuracy_Table)
 (Predict_Table)
