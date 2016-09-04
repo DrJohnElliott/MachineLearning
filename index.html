@@ -29,7 +29,7 @@
 <a id="john-elliott" class="anchor" href="#john-elliott" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>John Elliott</h1>
 
 <h3>
-<a id="-september-3-2016" class="anchor" href="#-september-3-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>## September 3, 2016</h3>
+<a id="september-3-2016" class="anchor" href="#september-3-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>September 3, 2016</h3>
 
 <h2>
 <a id="background-of-the-project" class="anchor" href="#background-of-the-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Background of the project:</strong>
@@ -91,6 +91,12 @@
 </h2>
 
 <p>First we take a quick look at the data set to see what we have.</p>
+
+<p><code>dim(testingData)</code>
+        <code>head(testingData[ 3,1:5])</code>
+        <code>str(testingData[3, 1:5])</code>
+        <code>head(trainingData[ 3,1:5])</code>
+        <code>str(trainingData[3, 1:5])</code></p>
 
 <blockquote>
 <p>[1]  20 160
@@ -181,9 +187,9 @@
 
 <p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_2.png?raw=true" alt="Model 2: Clasification Tree with sub-setted predictors"></p>
 
-<h3>
+<h2>
 <a id="validation-of-the-classification-trees" class="anchor" href="#validation-of-the-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Validation of the Classification Trees</strong>
-</h3>
+</h2>
 
 <p>Validation of the two models was performed using the validation data that was sub-setted from the training data.</p>
 
@@ -254,27 +260,32 @@
 
 <p><code>(Accuracy_Table)</code></p>
 
-<blockquote>
-<pre><code>            Method Used  Accuracy
+<hr>
+
+<pre><code>             Method Used  Accuracy
 </code></pre>
 
 <p>Model 1 Classification Tree 0.5661337
-Model 2     Sub-setted Tree 0.4779554
-Model 3       Random Forest 1.0000000</p>
-</blockquote>
+ Model 2     Sub-setted Tree 0.4779554
+ Model 3       Random Forest 1.0000000</p>
+
+<hr>
 
 <p><code>(Predict_Table)</code></p>
 
-<blockquote>
-<pre><code>    V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20
+<hr>
+
+<pre><code>     V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20
 </code></pre>
 
 <p>Model 1  A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C
 Model 2  C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D
 Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</p>
-</blockquote>
 
-<p>Plots of the Confusion Matrix for each model</p>
+<hr>
+
+<h2>
+<a id="plots-of-the-confusion-matrix-for-each-model" class="anchor" href="#plots-of-the-confusion-matrix-for-each-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plots of the Confusion Matrix for each model</h2>
 
 <p><code>library(reshape2)</code>
 <code>melted_mod1_confusion   &lt;- melt(mod1_confusion)</code>
@@ -299,9 +310,9 @@ Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</
 
 <p>The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type “D”.</p>
 
-<h2>
+<h1>
 <a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Summary and Conclusions:</strong>
-</h2>
+</h1>
 
 <p>The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises.</p>
 
