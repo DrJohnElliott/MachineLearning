@@ -43,11 +43,16 @@
 <a id="executive-summary-of-the-results" class="anchor" href="#executive-summary-of-the-results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Executive summary of the results:</strong>
 </h2>
 
-<p>To predict the outcome of the testing data, 3 models were developed. The first model, “Model 1” was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, “D”. Therefore another Classification Tree model was created, “Model 2” by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created “Model 3” using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.</p>
+<p>To predict the outcome of the testing data, 3 models were developed. The first model, "Model 1" was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, <strong>"D"</strong>. Therefore another Classification Tree model was created, "Model 2" by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created "Model 3" using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and an estimated out of sample error of  0.0008932247, was able to predict all outcomes of the test data accurately. Predictions from Model 3: B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</p>
 
 <h2>
 <a id="code" class="anchor" href="#code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Code:</strong>
 </h2>
+
+<h4>
+<a id="git-hub-repository" class="anchor" href="#git-hub-repository" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GIT HUB Repository</h4>
+
+<p><a href="https://github.com/DrJohnElliott/MachineLearning/blob/master/Class_Project_week_4.Rmd">https://github.com/DrJohnElliott/MachineLearning/blob/master/Class_Project_week_4.Rmd</a></p>
 
 <h3>
 <a id="data-download" class="anchor" href="#data-download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Data Download:</strong>
@@ -68,7 +73,8 @@
     `}`
 </code></pre>
 
-<p>Load Data Into Envioroment (Reading In Data)</p>
+<h2>
+<a id="load-data-into-environment-reading-in-data" class="anchor" href="#load-data-into-environment-reading-in-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Load Data Into Environment (Reading In Data)</h2>
 
 <p>A check for the required data is made and if not found it is read into the environment. Also “cache = TRUE” is set for the data chunk to provide data caching.</p>
 
@@ -255,6 +261,17 @@
 <a id="model-comparison" class="anchor" href="#model-comparison" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model Comparison</strong>
 </h2>
 
+<h4>
+<a id="out-of-sample-error-estimation" class="anchor" href="#out-of-sample-error-estimation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Out of sample error estimation</h4>
+
+<pre><code>`Out_S_Error_1 &lt;- 1- confusionMatrix(validate$classe, mod1_prediction)$overall[3]`
+`Out_S_Error_2 &lt;- 1 - confusionMatrix(validate$classe, mod2_prediction)$overall[3]`
+`Out_S_Error_3 &lt;- 1 - confusionMatrix(validate$classe, val_predict)$overall[3]`
+</code></pre>
+
+<h4>
+<a id="acurracy-and-prediction" class="anchor" href="#acurracy-and-prediction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acurracy and Prediction</h4>
+
 <p>Tables of the accuracy and prediction values are created for model comparison.</p>
 
 <pre><code>`Accuracy_Table          &lt;- as.data.frame(matrix(nrow=3,ncol=2))`
@@ -323,7 +340,12 @@
 <a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Summary and Conclusions:</strong>
 </h1>
 
-<p>The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. The RMD file containing all the code used for this project can be found at <a href="https://github.com/DrJohnElliott/MachineLearning/blob/master/Class_Project_week_4.Rmd">Complete R-Code</a></p>
+<p>The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99% and an estimated out of sample error of  0.0008932247 with this data set it is the best model selection. The model was able to predict all outcomes of the test data accurately. </p>
+
+<pre><code>`Predictions from Model 3: B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B`
+</code></pre>
+
+<p>An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. The RMD file containing all the code used for this project can be found at <a href="https://github.com/DrJohnElliott/MachineLearning/blob/master/Class_Project_week_4.Rmd">Complete R-Code</a></p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/DrJohnElliott/MachineLearning">John Elliott Class Project for Machine Learning</a> is maintained by <a href="https://github.com/DrJohnElliott">DrJohnElliott</a>.</span>
