@@ -19,16 +19,18 @@
     </section>
 
     <section class="main-content">
-      <p>Elliott Machine Learning Final Class Project
+      <p>Machine Learning Final Class Project
 John Elliott</p>
 
 <p>September 3, 2016</p>
 
 <p>Background of the project:
-This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> is used to construct a model that can discern between the different classe type. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault winch makes up the classe variable. The data experiment was published in the following paper: Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013. and you can read more about it here: <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a></p>
+This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> is used to construct a model that can discern between the outcome variable “classe”. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault which makes up the classe variable. The data experiment was published in the following paper:</p>
 
-<p>Execitive summary of the results:
-To predict the outcome of the testing data, 3 models were developed. The first was a classification tree that used all predictor variables. It was not able to predict one of the classe types “D”. The classification tree was pruned by choosing predictor variables selected from feature plots where separation could be seen. The second model, the pruned classification tree was able to predict all classe types. The validation of the two classification trees was disappointing the first showed better accuracy but couldn’t predict all classe types, both models had accuracy below 60%. A third model was created using a Random Forest method. This model yielded excellent results with the data set with an accuracy of 99%.</p>
+<p>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013. and you can read more about it here: <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a></p>
+
+<p>Executive summary of the results:
+To predict the outcome of the testing data, 3 models were developed. The first model, “Model 1” was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, “D”. Therefore another Classification Tree model was created, “Model 2” by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created “Model 3” using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.</p>
 
 <p>Code:
 Data Download:</p>
@@ -121,6 +123,8 @@ Exploratory plots of the data are created to look for a subset of predictor vari
 <pre><code>    fancyRpartPlot(model_1$finalModel)
 </code></pre>
 
+<p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_1.png?raw=true" alt="Model 1: Classification Tree"></p>
+
 <p>The first model was not able to discern classe type “D”, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.</p>
 
 <p>Model Two:</p>
@@ -132,9 +136,11 @@ Exploratory plots of the data are created to look for a subset of predictor vari
 <pre><code>    fancyRpartPlot(model_2$finalModel)
 </code></pre>
 
+<p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_2.png?raw=true" alt="Model 2: Clasification Tree with sub-setted predictors"></p>
+
 <p>Validation of the Classification Trees</p>
 
-<p>Validation of the two models was performed using the validation data that was subset ted from the training data.</p>
+<p>Validation of the two models was performed using the validation data that was sub-setted from the training data.</p>
 
 <p>mod1_prediction &lt;- predict(model_1, validate)
 mod2_prediction &lt;- predict(model_2, validate)</p>
@@ -148,7 +154,7 @@ Predictions made with Classification Trees:</p>
 
 <p>mod1_predict    &lt;- predict(model_1, testingData)
 mod2_predict    &lt;- predict(model_2, testingData)
-Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.4779554 . With both models having ac curacies below 60% another modelling method was explored.</p>
+Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.4779554 . With both models having accuracy below 60% another modelling method was explored.</p>
 
 <p>Model development of Random Forests</p>
 
@@ -163,7 +169,7 @@ Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.47795
 <p>mod3            &lt;- train(as.factor(classe) ~ .,method="rf",trControl=myControl,data=trainingData)
 Validation of the Random Forest</p>
 
-<p>Validation of the Random Forest model was performed using the validation data that was subset ted from the training data.</p>
+<p>Validation of the Random Forest model was performed using the validation data that was sub-setted from the training data.</p>
 
 <p>val_predict     &lt;- predict(mod3, validate)
 My_Confusion    &lt;- as.matrix(confusionMatrix(validate$classe, val_predict))
@@ -176,7 +182,7 @@ Model Comparison</p>
 <p>Tables of the accuracy and prediction values are created for model comparison.</p>
 
 <p>Accuracy_Table          &lt;- as.data.frame(matrix(nrow=3,ncol=2))
-Method                  &lt;- c("Classification Tree", "Pruned Tree", "Random Forest")
+Method                  &lt;- c("Classification Tree", "Sub-setted Tree", "Random Forest")
 rownames(Accuracy_Table)&lt;-c("Model 1", "Model 2", "Model 3")
 colnames(Accuracy_Table)&lt;- c( "Method Used", "Accuracy")
 Accuracy_Table[,1]      &lt;- as.data.frame(Method)
@@ -186,21 +192,23 @@ Accuracy_Table[3,2]     &lt;- as.data.frame(accuracy_mod3)</p>
 
 <p>Predict_Table           &lt;- as.data.frame(matrix(nrow=3,ncol=20))
 rownames(Predict_Table) &lt;-c("Model 1", "Model 2", "Model 3")
-Predict_Table[1, ]       &lt;- as.data.frame(mod1_predict)
-Predict_Table[2, ]       &lt;- as.data.frame(mod2_predict)
-Predict_Table[3, ]       &lt;- as.data.frame(mod3_predict)</p>
+Predict_Table[1, ]       &lt;- mod1_predict
+Predict_Table[2, ]       &lt;- mod2_predict
+Predict_Table[3, ]       &lt;- mod3_predict</p>
 
 <p>(Accuracy_Table)
                 Method Used  Accuracy
 Model 1 Classification Tree 0.5661337
-Model 2         Pruned Tree 0.4779554
-Model 3       Random Forest 1.0000000
-(Predict_Table)
+Model 2     Sub-setted Tree 0.4779554
+Model 3       Random Forest 1.0000000</p>
+
+<p>(Predict_Table)
         V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20
-Model 1  1  1  1  1  1  1  1  1  1   1   1   1   1   1   1   1   1   1   1   1
-Model 2  3  3  3  3  3  3  3  3  3   3   3   3   3   3   3   3   3   3   3   3
-Model 3  2  2  2  2  2  2  2  2  2   2   2   2   2   2   2   2   2   2   2   2
-Plots of the Confusion Matrix for each model</p>
+Model 1  A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C
+Model 2  C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D
+Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</p>
+
+<p>Plots of the Confusion Matrix for each model</p>
 
 <p>library(reshape2)
 melted_mod1_confusion   &lt;- melt(mod1_confusion)
