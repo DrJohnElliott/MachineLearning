@@ -159,6 +159,8 @@ Also "cache = TRUE" is set for the data chunk to provide data caching.</p>
 <span class="pl-smi">training_set</span>    <span class="pl-k">&lt;-</span> colnames(<span class="pl-smi">trainingData</span>[c(<span class="pl-c1">10</span><span class="pl-k">:</span><span class="pl-c1">13</span>,<span class="pl-c1">37</span><span class="pl-k">:</span><span class="pl-c1">45</span>)])
 </pre></div>
 
+<p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Rplot.png" alt="Feature Plot of Predictors"></p>
+
 <h4>
 <a id="model-development-of-classification-trees" class="anchor" href="#model-development-of-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model development of Classification Trees:</h4>
 
@@ -175,7 +177,8 @@ Also "cache = TRUE" is set for the data chunk to provide data caching.</p>
         fancyRpartPlot(<span class="pl-smi">model_1</span><span class="pl-k">$</span><span class="pl-smi">finalModel</span>)
 </pre></div>
 
-<p>The first model was not able to discern classe type <strong>"D"</strong>, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.</p>
+<p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_1.png" alt="Classification Tree Model 1">
+The first model was not able to discern classe type <strong>"D"</strong>, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.</p>
 
 <h5>
 <a id="model-two" class="anchor" href="#model-two" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model Two:</h5>
@@ -186,8 +189,9 @@ Also "cache = TRUE" is set for the data chunk to provide data caching.</p>
 
 
         fancyRpartPlot(<span class="pl-smi">model_2</span><span class="pl-k">$</span><span class="pl-smi">finalModel</span>)
-
 </pre></div>
+
+<p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_2.png" alt="Classification Tree Model 2"></p>
 
 <h4>
 <a id="validation-of-the-classification-trees" class="anchor" href="#validation-of-the-classification-trees" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validation of the Classification Trees</h4>
@@ -297,7 +301,8 @@ library(<span class="pl-smi">gridExtra</span>)
 grid.arrange(<span class="pl-smi">g1</span>, <span class="pl-smi">g2</span>, <span class="pl-smi">g3</span>, <span class="pl-v">ncol</span> <span class="pl-k">=</span> <span class="pl-c1">3</span>)
 </pre></div>
 
-<p>The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type "D". </p>
+<p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/confusionMatices.png" alt="Confusion Matrices">
+The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type "D". </p>
 
 <h2>
 <a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary and Conclusions</h2>
