@@ -20,13 +20,10 @@
 
     <section class="main-content">
       <h1>
-<a id="machine-learning" class="anchor" href="#machine-learning" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Machine Learning</h1>
+<a id="machine-learning-week-4-class-project" class="anchor" href="#machine-learning-week-4-class-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Machine Learning Week 4 Class Project</h1>
 
-<h1>
-<a id="final-class-project" class="anchor" href="#final-class-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Final Class Project</h1>
-
-<h1>
-<a id="john-elliott" class="anchor" href="#john-elliott" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>John Elliott</h1>
+<h2>
+<a id="john-elliott" class="anchor" href="#john-elliott" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>John Elliott</h2>
 
 <h3>
 <a id="september-3-2016" class="anchor" href="#september-3-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>September 3, 2016</h3>
@@ -97,31 +94,9 @@
 
 <p>First we take a quick look at the data set to see what we have.</p>
 
-<pre><code>    `dim(testingData)`
-    `head(testingData[ 3,1:5])`
-    `str(testingData[3, 1:5])  `
-    `head(trainingData[ 3,1:5])`
+<pre><code>    `head(trainingData[ 3,1:5])`
     `str(trainingData[3, 1:5])`
 </code></pre>
-
-<hr>
-
-<blockquote>
-<p>[1]  20 160
-  X user_name raw_timestamp_part_1 raw_timestamp_part_2   cvtd_timestamp
-3 3    jeremy           1322673075               342967 30/11/2011 17:11</p>
-</blockquote>
-
-<hr>
-
-<blockquote>
-<p>'data.frame':   1 obs. of  5 variables:
- $ X                   : int 3
- $ user_name           : Factor w/ 6 levels "adelmo","carlitos",..: 5
- $ raw_timestamp_part_1: int 1322673075
- $ raw_timestamp_part_2: int 342967
- $ cvtd_timestamp      : Factor w/ 11 levels "02/12/2011 13:33",..: 10</p>
-</blockquote>
 
 <hr>
 
@@ -223,7 +198,7 @@
 `mod2_predict    &lt;- predict(model_2, testingData)`
 </code></pre>
 
-<p>Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.4779554 . With both models having accuracy below 60% another modelling method was explored.</p>
+<p>Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.4779554 . Since both models have an accuracy below 60% another model was developed.</p>
 
 <h2>
 <a id="model-development-of-random-forests" class="anchor" href="#model-development-of-random-forests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model development of Random Forests</strong>
@@ -270,7 +245,7 @@
 </code></pre>
 
 <h4>
-<a id="acurracy-and-prediction" class="anchor" href="#acurracy-and-prediction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acurracy and Prediction</h4>
+<a id="accuracy-and-prediction" class="anchor" href="#accuracy-and-prediction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Accuracy and Prediction</h4>
 
 <p>Tables of the accuracy and prediction values are created for model comparison.</p>
 
