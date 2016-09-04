@@ -55,10 +55,9 @@
 
 <p>Data is downloaded from the defined URLs. The code makes a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory.</p>
 
-<p><code>URL &lt;- c("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv",</code>
-                 <code>"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv")</code></p>
-
-<pre><code>    `required_files &lt;- c("pml-training.csv", "pml-testing.csv")`
+<pre><code>`URL &lt;- c("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv",`
+`"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv")`
+`required_files &lt;- c("pml-training.csv", "pml-testing.csv")`
 
     `for(i in 1:length(URL)){`
             `if(!all(lapply(required_files[i],file.exists)==TRUE)){ `
@@ -99,25 +98,44 @@
     `str(trainingData[3, 1:5])`
 </code></pre>
 
+<hr>
+
 <blockquote>
 <p>[1]  20 160
   X user_name raw_timestamp_part_1 raw_timestamp_part_2   cvtd_timestamp
-3 3    jeremy           1322673075               342967 30/11/2011 17:11
-'data.frame':   1 obs. of  5 variables:
+3 3    jeremy           1322673075               342967 30/11/2011 17:11</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+<p>'data.frame':   1 obs. of  5 variables:
  $ X                   : int 3
  $ user_name           : Factor w/ 6 levels "adelmo","carlitos",..: 5
  $ raw_timestamp_part_1: int 1322673075
  $ raw_timestamp_part_2: int 342967
- $ cvtd_timestamp      : Factor w/ 11 levels "02/12/2011 13:33",..: 10
-  X user_name raw_timestamp_part_1 raw_timestamp_part_2   cvtd_timestamp
-3 3  carlitos           1323084231               820366 05/12/2011 11:23
-'data.frame':   1 obs. of  5 variables:
+ $ cvtd_timestamp      : Factor w/ 11 levels "02/12/2011 13:33",..: 10</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+<p>X user_name raw_timestamp_part_1 raw_timestamp_part_2   cvtd_timestamp
+3 3  carlitos           1323084231               820366 05/12/2011 11:23</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+<p>'data.frame':   1 obs. of  5 variables:
  $ X                   : int 3
  $ user_name           : Factor w/ 6 levels "adelmo","carlitos",..: 2
  $ raw_timestamp_part_1: int 1323084231
  $ raw_timestamp_part_2: int 820366
  $ cvtd_timestamp      : Factor w/ 20 levels "02/12/2011 13:32",..: 9</p>
 </blockquote>
+
+<hr>
 
 <p>We check for incomplete data columns with Na’s in the two data sets, remove incomplete variables from the population and omit first 7 columns of descriptor variables.</p>
 
@@ -176,8 +194,7 @@
 
 <p>Model two also uses the default train control method of resampling, cross validation “cv”, and a fold of 10.</p>
 
-<pre><code>`model_2         &lt;- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)`
-
+<pre><code>`model_2         &lt;- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)`        
     `fancyRpartPlot(model_2$finalModel)`
 </code></pre>
 
@@ -258,12 +275,14 @@
 
 <hr>
 
-<ul>
-<li>                 Method Used  Accuracy</li>
-<li> Model 1 Classification Tree 0.5661337</li>
-<li> Model 2     Sub-setted Tree 0.4779554</li>
-<li> Model 3       Random Forest 1.0000000</li>
-</ul>
+<p><code>Method Used             Accuracy</code></p>
+
+<pre><code>`Model 1     Classification Tree     0.5661337`
+
+`Model 2     Sub-setted Tree         0.4779554`
+
+`Model 3     Random Forest           1.0000000`
+</code></pre>
 
 <hr>
 
@@ -272,13 +291,14 @@
 
 <hr>
 
-<ul>
-<li>         V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20</li>
-<li>Model 1  A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C</li>
-<li>Model 2  C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D</li>
-<li>Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B
-***</li>
-</ul>
+<pre><code> `Model 1    A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C`
+
+ `Model 2    C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D`
+
+ `Model 3    B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B`
+</code></pre>
+
+<hr>
 
 <h2>
 <a id="plots-of-the-confusion-matrix-for-each-model" class="anchor" href="#plots-of-the-confusion-matrix-for-each-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plots of the Confusion Matrix for each model</h2>
