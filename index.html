@@ -1,66 +1,56 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Machinelearning : Coursera Data Science ">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Machinelearning</title>
+    <meta charset="UTF-8">
+    <title>John Elliott Class Project for Machine Learning by DrJohnElliott</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">John Elliott Class Project for Machine Learning</h1>
+      <h2 class="project-tagline">Coursera Data Science </h2>
+      <a href="https://github.com/DrJohnElliott/MachineLearning" class="btn">View on GitHub</a>
+      <a href="https://github.com/DrJohnElliott/MachineLearning/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/DrJohnElliott/MachineLearning/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/DrJohnElliott/MachineLearning">View on GitHub</a>
-
-          <h1 id="project_title">Machinelearning</h1>
-          <h2 id="project_tagline">Coursera Data Science </h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/DrJohnElliott/MachineLearning/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/DrJohnElliott/MachineLearning/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>Machine Learning Final Class Project
+    <section class="main-content">
+      <p>Machine Learning 
+Final Class Project
 John Elliott</p>
 
 <p>September 3, 2016</p>
 
-<p>Background of the project:
+<p><strong>Background of the project:</strong>
 This work is created for the final class project in the Practical Machine Learning Course, as part of the Coursera Data Science Track. To demonstrate machine learning techniques learned during the course data from <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> is used to construct a model that can discern between the outcome variable “classe”. The data is from fitbit type devices worn by weightlifters performing exercises where they purposely performed the exercise with a particular type of fault which makes up the classe variable. The data experiment was published in the following paper:</p>
 
 <p>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013. and you can read more about it here: <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a></p>
 
-<p>Executive summary of the results:
+<p><strong>Executive summary of the results:</strong>
 To predict the outcome of the testing data, 3 models were developed. The first model, “Model 1” was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, “D”. Therefore another Classification Tree model was created, “Model 2” by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created “Model 3” using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.</p>
 
-<p>Code:
-Data Download:</p>
+<p><strong>Code:</strong></p>
+
+<p><strong>Data Download:</strong></p>
 
 <p>Data is downloaded from the defined URLs. The code makes a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory.</p>
 
-<pre><code>    URL &lt;- c("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv",
-             "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv")
+<p><code>URL &lt;- c("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv",</code>
+                 <code>"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv")</code></p>
 
-    required_files &lt;- c("pml-training.csv", "pml-testing.csv")
+<pre><code>    `required_files &lt;- c("pml-training.csv", "pml-testing.csv")`
 
-    for(i in 1:length(URL)){
-            if(!all(lapply(required_files[i],file.exists)==TRUE)){ 
-                    print("Required Data Files Not Found!")
-                    print("Please wait while the files are downloaded")
-                    download.file(URL[i], destfile = required_files[i], mode="wb")
-            }
-    }
+    `for(i in 1:length(URL)){`
+            `if(!all(lapply(required_files[i],file.exists)==TRUE)){ `
+                    `print("Required Data Files Not Found!")`
+                    `print("Please wait while the files are downloaded")`
+                    `download.file(URL[i], destfile = required_files[i], mode="wb")`
+            `}`
+    `}`
 </code></pre>
 
 <p>Load Data Into Envioroment (Reading In Data)</p>
@@ -259,18 +249,15 @@ g1 &lt;-ggplot(data = melted_mod1_confusion, aes(x=Classe, y=Predicted, fill=val
 
 <p>Summary and Conclusions
 The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises.</p>
-      </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Machinelearning maintained by <a href="https://github.com/DrJohnElliott">DrJohnElliott</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/DrJohnElliott/MachineLearning">John Elliott Class Project for Machine Learning</a> is maintained by <a href="https://github.com/DrJohnElliott">DrJohnElliott</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-    
+    </section>
 
+  
   </body>
 </html>
