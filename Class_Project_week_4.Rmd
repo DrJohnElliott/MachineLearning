@@ -1,25 +1,26 @@
 ---
-title: "Elliott Classs Project"
+title: "Elliott Machine Learning Final Class Project"
 author: "John Elliott"
-date: "August 30, 2016"
+date: "September 3, 2016"
 output: html_document
 ---
 
 ```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F}
 # make this an external chunk that can be included in any file
-options(width = 100)
-library(knitr)
-opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100, tidy = F, cache.path = '.cache/', fig.path = 'fig/')
+        options(width = 100)
+        library(knitr)
+        opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100, tidy = F, cache.path = '.cache/', fig.path = 'fig/')
 
-options(xtable.type = 'html')
-knit_hooks$set(inline = function(x) {
-  if(is.numeric(x)) {
-    round(x, getOption('digits'))
-  } else {
-    paste(as.character(x), collapse = ', ')
-  }
-})
-knit_hooks$set(plot = knitr:::hook_plot_html)
+        options(xtable.type = 'html')
+        
+        knit_hooks$set(inline = function(x) {
+                if(is.numeric(x)) {
+                        round(x, getOption('digits'))
+                } else {
+                        paste(as.character(x), collapse = ', ')
+                        }
+                })
+        knit_hooks$set(plot = knitr:::hook_plot_html)
 ```
 
 
@@ -96,13 +97,13 @@ Also "cache = TRUE" is set for the data chunk to provide data caching.
 First we take a quick look at the data set to see what we have.
 ```{r get_set_size, echo=FALSE}
         dim(testingData)
-        head(testingData[ ,1:15])
-        str(testingData[, 1:15])
-        colnames(testingData)
+        head(testingData[ 3,1:5])
+        str(testingData[3, 1:5])
+        #colnames(testingData)
         
-        head(trainingData[ ,1:15])
-        str(trainingData[, 1:15])
-        colnames(trainingData)
+        head(trainingData[ 3,1:5])
+        str(trainingData[3, 1:5])
+        #colnames(trainingData)
          
 ```
 
@@ -131,7 +132,7 @@ validate        <- trainingData[-inTrain, ]
 
 Exploratory plots of the data are created to look for a subset of predictor variables. An example plot of 4 variables is shown, the process was repeated to find predictors that may improve the modeling accuracy. The list of predictors was placed in a variable named **training_set**.
 
-```{r Plot_Data, echo=False}
+```{r Plot_Data, echo=FALSE}
                                               
        featurePlot(x = trainingData[, 10:13], 
             y = trainingData$classe,
@@ -147,29 +148,27 @@ training_set    <- colnames(trainingData[c(10:13,37:45)])
 
 ##### Model One:
 
-The first model is a classification tree (method = "rpart") using all predictors.
-```{r model_1, echo=TRUE  }
+The first model is a classification tree (method = "rpart") using all predictors. The model uses the default train control method of resampling, cross validation "cv", and a fold of 10.
+```{r model_1, echo=TRUE, cache = TRUE }
 
         set.seed(1972)
 
 model_1         <- train(as.factor(classe) ~ . ,  method = "rpart", data = trainingData)
 
-        plot(model_1$finalModel, uniform=TRUE, main="Classification Tree")
-        text(model_11$finalModel, use.n = TRUE, all = TRUE, cex = 0.8)
         fancyRpartPlot(model_1$finalModel)
-
+        
 ```
 
 The first model was not able to discern classe type **"D"**, the alternate set of predictors were used to create the second model a pruned version of the first classification tree.
 
 ##### Model Two:
-
-```{r model_2, echo=TRUE}
+Model two also uses the default train control method of resampling, cross validation "cv", and a fold of 10.
+```{r model_2, echo=TRUE, cache = TRUE}
 model_2         <- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)
 
-        plot(model_2$finalModel, uniform=TRUE, main="Classification Tree")
-        text(model_2$finalModel, use.n = TRUE, all = TRUE, cex = 0.8)
+        
         fancyRpartPlot(model_2$finalModel)
+        
 
 ```
 
@@ -179,22 +178,14 @@ Validation of the two models was performed using the validation data that was su
 
 ```{r, validation_1_2, echo=TRUE}
 
-mod1_prediction <- predict(mod1, validate)
-mod2_prediction <- predict(mod2, validate)
+mod1_prediction <- predict(model_1, validate)
+mod2_prediction <- predict(model_2, validate)
 
-mod1_confusion  <- confusionMatrix(validate$classe, mod1_prediction)
-mod2_confusion  <- confusionMatrix(validate$classe, mod2_prediction)
+mod1_confusion  <- as.matrix(confusionMatrix(validate$classe, mod1_prediction))
+mod2_confusion  <- as.matrix(confusionMatrix(validate$classe, mod2_prediction))
 
-accuracy_mod1   <- mod1_confusion$overall[1]
-accuracy_mod2   <- mod2_confusion$overall[1]
-
-print("Model One")
-mod1_confusion[2]
-accuracy_mod1
-
-print("Model Two")
-mod2_confusion[2]
-accuracy_mod2
+accuracy_mod1   <- confusionMatrix(validate$classe, mod1_prediction)$overall[1]
+accuracy_mod2   <- confusionMatrix(validate$classe, mod2_prediction)$overall[1]
 
 ```
 
@@ -202,8 +193,8 @@ accuracy_mod2
 
 ```{r, prediction_1_2, echo=TRUE}
 
-        predict(model_1, testingData)
-        predict(model_2, testingData)
+mod1_predict    <- predict(model_1, testingData)
+mod2_predict    <- predict(model_2, testingData)
 
 ```
 
@@ -214,8 +205,8 @@ Model 1 has better accuracy at `r accuracy_mod1` compared to model 2 accuracy of
 The last model explored is a Random Forest (method = "rf") using all predictor variables. 
 
 ##### Model Three:
-
-```{r model_3, echo=TRUE }
+For the training The train control used was k fold cross validation "cv", with a k fold value of 5. 
+```{r model_3, echo=TRUE , cache=TRUE}
 
 myControl       <- trainControl(method = "cv", number = 5)
 
@@ -230,10 +221,9 @@ Validation of the Random Forest model was performed using the validation data th
 ```{r, validate_3, echo=TRUE}
 
 val_predict     <- predict(mod3, validate)
-My_Confusion    <- confusionMatrix(validate$classe, val_predict)
+My_Confusion    <- as.matrix(confusionMatrix(validate$classe, val_predict))
+accuracy_mod3   <- confusionMatrix(validate$classe, val_predict)$overall[1]      
         
-        My_Confusion$overall[3]
-        My_Confusion[2]
 
 ```
 
@@ -241,14 +231,62 @@ The Random Forest model is able to predict all classe types and has an accuracy 
 
 ```{r, mod3_prediction, echo=TRUE}
 
-        predict(mod3, testingData)
-
-# [1] B A B A A E D B A A B C B A E E A B B B
-
+mod3_predict    <- predict(mod3, testingData)
 
 ```
 
 
-## Conclusions
-The random Forest model out performed the Classification Tree model by leaps and bounds. The results are only based on the data set the models were trained on and it is expected the results would be different for data collected under different circumstances and the individuals who performed the exercises.
+#### Model Comparison
+
+Tables of the accuracy and prediction values are created for model comparison.
+```{r, compare_models, echo=TRUE}
+Accuracy_Table          <- as.data.frame(matrix(nrow=3,ncol=2))
+Method                  <- c("Classification Tree", "Pruned Tree", "Random Forest")
+rownames(Accuracy_Table)<-c("Model 1", "Model 2", "Model 3")
+colnames(Accuracy_Table)<- c( "Method Used", "Accuracy")
+Accuracy_Table[,1]      <- as.data.frame(Method)
+Accuracy_Table[1,2]     <- as.data.frame(accuracy_mod1)
+Accuracy_Table[2,2]     <- as.data.frame(accuracy_mod2)
+Accuracy_Table[3,2]     <- as.data.frame(accuracy_mod3)
+
+Predict_Table           <- as.data.frame(matrix(nrow=3,ncol=20))
+rownames(Predict_Table) <-c("Model 1", "Model 2", "Model 3")
+Predict_Table[1, ]       <- as.data.frame(mod1_predict)
+Predict_Table[2, ]       <- as.data.frame(mod2_predict)
+Predict_Table[3, ]       <- as.data.frame(mod3_predict)
+
+(Accuracy_Table)
+(Predict_Table)
+
+```
+
+
+#### Plots of the Confusion Matrix for each model
+```{r, confusion_matrix, echo=TRUE}
+
+library(reshape2)
+melted_mod1_confusion   <- melt(mod1_confusion)
+melted_mod2_confusion   <- melt(mod2_confusion)
+melted_My_Confusion     <- melt(My_Confusion)
+colnames( melted_mod1_confusion ) <- c("Classe", "Predicted","value")
+colnames( melted_mod2_confusion ) <- c("Classe", "Predicted","value")
+colnames( melted_My_Confusion ) <- c("Classe", "Predicted","value")
+library(gridExtra)
+g1 <-ggplot(data = melted_mod1_confusion, aes(x=Classe, y=Predicted, fill=value)) + 
+  geom_tile() + ggtitle("Model 1") + coord_fixed(ratio=1)
+
+g2 <-ggplot(data = melted_mod2_confusion, aes(x=Classe, y=Predicted, fill=value)) + 
+  geom_tile() + ggtitle("Model 2") + coord_fixed(ratio=1)
+
+g3 <- ggplot(data = melted_My_Confusion, aes(x=Classe, y=Predicted, fill=value)) + 
+  geom_tile() + ggtitle("Model 3") + coord_fixed(ratio=1)
+
+grid.arrange(g1, g2, g3, ncol = 3)
+
+```
+
+The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type "D". 
+
+## Summary and Conclusions
+The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. 
 
