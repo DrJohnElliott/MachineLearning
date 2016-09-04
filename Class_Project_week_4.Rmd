@@ -300,7 +300,7 @@ The plots above of the confusion matrices, show how the Random Forest model perf
 
 ## Summary and Conclusions
 
-        The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99% and an estimated out of sample error of  0.0008932247 with this data set it is the best model selection. The model was able to predict all outcomes of the test data accurately. Predictions from Model 3: B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B
+The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99% and an estimated out of sample error of  0.0008932247 with this data set it is the best model selection. The model was able to predict all outcomes of the test data accurately. Predictions from Model 3: B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B
 
-        An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. 
+An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. 
 
