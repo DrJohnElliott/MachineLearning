@@ -47,10 +47,14 @@ This work is created for the final class project in the Practical Machine Learni
 
 ## Executive summary of the results:
 
-To predict the outcome of the testing data, 3 models were developed. The first model, "Model 1" was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, **"D"**. Therefore another Classification Tree model was created, "Model 2" by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created "Model 3" using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and was able to predict all outcomes of the test data accurately.
+To predict the outcome of the testing data, 3 models were developed. The first model, "Model 1" was a Classification Tree that used all predictor variables. It was not able to predict one of the classe type, **"D"**. Therefore another Classification Tree model was created, "Model 2" by sub-setting predictor variables by selecting them from feature plots where separation could be visually seen. Model 2 was able to predict all classe types but had slightly lower accuracy compared to Model 1. The performance of the two classification trees was disappointing, both with accuracy below 60%. A third model was created "Model 3" using a Random Forest method. This model yielded excellent performance with the data, with an accuracy of 99% and an estimated out of sample error of  0.0008932247, was able to predict all outcomes of the test data accurately. Predictions from Model 3: B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B
 
 
 ## Code:
+
+#### GIT HUB Repository
+
+https://github.com/DrJohnElliott/MachineLearning/blob/master/Class_Project_week_4.Rmd
 
 ####Data Download:
 Data is downloaded from the defined URLs. The code makes a check to see if the required data file is present in the working directory. If it is not found then the file is downloaded and placed into the working directory. 
@@ -74,7 +78,7 @@ Data is downloaded from the defined URLs. The code makes a check to see if the r
 
 
 
-#### Load Data Into Envioroment (Reading In Data)
+#### Load Data Into Environment (Reading In Data)
 A check for the required data is made and if not found it is read into the environment. 
 Also "cache = TRUE" is set for the data chunk to provide data caching.
 ```{r load_data, echo=TRUE, cache=TRUE  }
@@ -102,8 +106,6 @@ First we take a quick look at the data set to see what we have.
         str(testingData[3, 1:5])
         head(trainingData[ 3,1:5])
         str(trainingData[3, 1:5])
-        
-         
 ```
 
 We check for incomplete data columns with Na's in the two data sets, remove incomplete variables from the population and omit first 7 columns of descriptor variables.
@@ -118,7 +120,7 @@ trainingData    <- trainingData[,7:60]
 testingData     <- testingData[,7:60]   
 ```
 
-We create a validation subset from the training data
+We create a validation subset from the training data for cross validation of the models.
 ```{r validation, echo=TRUE}
      
         set.seed(1972) 
@@ -138,7 +140,6 @@ Feature plots of the data are created to look for a subset of predictor variable
        featurePlot(x = trainingData[, 10:13], 
             y = trainingData$classe,
             plot = "ellipse",
-            ## Add a key at the top
             auto.key = list(columns = 3))
 
 training_set    <- colnames(trainingData[c(10:13,37:45)])
@@ -234,7 +235,19 @@ mod3_predict    <- predict(mod3, testingData)
 ```
 
 
-#### Model Comparison
+### Model Comparison
+
+#### Out of sample error estimation
+
+```{r, OUT_SAMPLE_ERROR, echo=TRUE}
+        
+ Out_S_Error_1 <- 1- confusionMatrix(validate$classe, mod1_prediction)$overall[3]
+ Out_S_Error_2 <- 1 - confusionMatrix(validate$classe, mod2_prediction)$overall[3]
+ Out_S_Error_3 <- 1 - confusionMatrix(validate$classe, val_predict)$overall[3]
+ 
+```
+
+#### Acurracy and Prediction
 
 Tables of the accuracy and prediction values are created for model comparison.
 ```{r, compare_models, echo=TRUE}
@@ -286,5 +299,8 @@ grid.arrange(g1, g2, g3, ncol = 3)
 The plots above of the confusion matrices, show how the Random Forest model performance (model 3) out performs the Classification Tree model. It can also be seen that Model 1 can not predict Classe type "D". 
 
 ## Summary and Conclusions
-The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99%, concluding for this data set it is the best model selection. An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. 
+
+        The random Forest model out performed the Classification Tree and Pruned tree models by leaps and bounds with an accuracy over 99% and an estimated out of sample error of  0.0008932247 with this data set it is the best model selection. The model was able to predict all outcomes of the test data accurately. Predictions from Model 3: B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B
+
+        An important note is that the results are only based on the data set that the models were trained on and it is expected the results could be different for data collected under different circumstances and conditions, such as new individuals who perform the exercises. 
 
