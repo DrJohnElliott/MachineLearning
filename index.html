@@ -92,11 +92,12 @@
 
 <p>First we take a quick look at the data set to see what we have.</p>
 
-<p><code>dim(testingData)</code>
-        <code>head(testingData[ 3,1:5])</code>
-        <code>str(testingData[3, 1:5])</code>
-        <code>head(trainingData[ 3,1:5])</code>
-        <code>str(trainingData[3, 1:5])</code></p>
+<pre><code>    `dim(testingData)`
+    `head(testingData[ 3,1:5])`
+    `str(testingData[3, 1:5])  `
+    `head(trainingData[ 3,1:5])`
+    `str(trainingData[3, 1:5])`
+</code></pre>
 
 <blockquote>
 <p>[1]  20 160
@@ -120,22 +121,20 @@
 
 <p>We check for incomplete data columns with Na’s in the two data sets, remove incomplete variables from the population and omit first 7 columns of descriptor variables.</p>
 
-<p><code>testingData     &lt;- testingData[, colSums(is.na(testingData)) == 0]</code>
-<code>trainingData    &lt;- trainingData[, colSums(is.na(trainingData)) == 0]</code></p>
-
-<p><code>checknames      &lt;- is.na(match(colnames(trainingData), colnames(testingData)))</code></p>
-
-<p><code>trainingData    &lt;- trainingData[,7:60]</code>
-<code>testingData     &lt;- testingData[,7:60]</code></p>
+<pre><code>`testingData     &lt;- testingData[, colSums(is.na(testingData)) == 0] `
+`trainingData    &lt;- trainingData[, colSums(is.na(trainingData)) == 0] `
+`checknames      &lt;- is.na(match(colnames(trainingData), colnames(testingData)))`
+`trainingData    &lt;- trainingData[,7:60]`
+`testingData     &lt;- testingData[,7:60]`
+</code></pre>
 
 <p>We create a validation subset from the training data</p>
 
 <pre><code>    `set.seed(1972) `
+`inTrain         &lt;- createDataPartition(trainingData$classe, p = 0.7, list = FALSE)`
+`trainingData    &lt;- trainingData[inTrain, ]`
+`validate        &lt;- trainingData[-inTrain, ]`
 </code></pre>
-
-<p><code>inTrain         &lt;- createDataPartition(trainingData$classe, p = 0.7, list = FALSE)</code>
-<code>trainingData    &lt;- trainingData[inTrain, ]</code>
-<code>validate        &lt;- trainingData[-inTrain, ]</code></p>
 
 <h2>
 <a id="exploratory-plots" class="anchor" href="#exploratory-plots" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Exploratory plots</strong>
@@ -163,11 +162,8 @@
 <p>The first model is a classification tree (method = “rpart”) using all predictors. The model uses the default train control method of resampling, cross validation “cv”, and a fold of 10.</p>
 
 <pre><code>   ` set.seed(1972)`
-</code></pre>
-
-<p><code>model_1         &lt;- train(as.factor(classe) ~ . ,  method = "rpart", data = trainingData)</code></p>
-
-<pre><code>    `fancyRpartPlot(model_1$finalModel)`
+`model_1         &lt;- train(as.factor(classe) ~ . ,  method = "rpart", data = trainingData)`
+    `fancyRpartPlot(model_1$finalModel)`
 </code></pre>
 
 <p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_1.png?raw=true" alt="Model 1: Classification Tree"></p>
@@ -180,9 +176,9 @@
 
 <p>Model two also uses the default train control method of resampling, cross validation “cv”, and a fold of 10.</p>
 
-<p><code>model_2         &lt;- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)</code></p>
+<pre><code>`model_2         &lt;- train(as.factor(classe) ~ accel_belt_y + accel_belt_z + magnet_belt_x + magnet_belt_y + accel_dumbbell_z + magnet_dumbbell_x + magnet_dumbbell_y + magnet_dumbbell_z + roll_forearm + pitch_forearm + yaw_forearm + total_accel_forearm + gyros_forearm_x , method = "rpart", data = trainingData)`
 
-<pre><code>    `fancyRpartPlot(model_2$finalModel)`
+    `fancyRpartPlot(model_2$finalModel)`
 </code></pre>
 
 <p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/Mod_2.png?raw=true" alt="Model 2: Clasification Tree with sub-setted predictors"></p>
@@ -193,18 +189,16 @@
 
 <p>Validation of the two models was performed using the validation data that was sub-setted from the training data.</p>
 
-<p><code>mod1_prediction &lt;- predict(model_1, validate)</code>
-<code>mod2_prediction &lt;- predict(model_2, validate)</code></p>
-
-<p><code>mod1_confusion  &lt;- as.matrix(confusionMatrix(validate$classe, mod1_prediction))</code>
-<code>mod2_confusion  &lt;- as.matrix(confusionMatrix(validate$classe, mod2_prediction))</code></p>
-
-<p><code>accuracy_mod1   &lt;- confusionMatrix(validate$classe, mod1_prediction)$overall[1]</code>
-<code>accuracy_mod2   &lt;- confusionMatrix(validate$classe, mod2_prediction)$overall[1]</code>
-<code>Predictions made with Classification Trees:</code></p>
-
-<p><code>mod1_predict    &lt;- predict(model_1, testingData)</code>
-<code>mod2_predict    &lt;- predict(model_2, testingData)</code></p>
+<pre><code>`mod1_prediction &lt;- predict(model_1, validate)`
+`mod2_prediction &lt;- predict(model_2, validate)`
+`mod1_confusion  &lt;- as.matrix(confusionMatrix(validate$classe, mod1_prediction))`
+`mod2_confusion  &lt;- as.matrix(confusionMatrix(validate$classe, mod2_prediction))`
+`accuracy_mod1   &lt;- confusionMatrix(validate$classe, mod1_prediction)$overall[1]`
+`accuracy_mod2   &lt;- confusionMatrix(validate$classe, mod2_prediction)$overall[1]`
+`Predictions made with Classification Trees:`
+`mod1_predict    &lt;- predict(model_1, testingData)`
+`mod2_predict    &lt;- predict(model_2, testingData)`
+</code></pre>
 
 <p>Model 1 has better accuracy at 0.5661337 compared to model 2 accuracy of 0.4779554 . With both models having accuracy below 60% another modelling method was explored.</p>
 
@@ -220,8 +214,9 @@
 
 <p>For the training The train control used was k fold cross validation “cv”, with a k fold value of 5.</p>
 
-<p><code>myControl       &lt;- trainControl(method = "cv", number = 5)</code>
-<code>mod3            &lt;- train(as.factor(classe) ~ .,method="rf",trControl=myControl,data=trainingData)</code></p>
+<pre><code>`myControl       &lt;- trainControl(method = "cv", number = 5)`
+`mod3            &lt;- train(as.factor(classe) ~ .,method="rf",trControl=myControl,data=trainingData)`
+</code></pre>
 
 <h2>
 <a id="validation-of-the-random-forest" class="anchor" href="#validation-of-the-random-forest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Validation of the Random Forest</strong>
@@ -229,13 +224,15 @@
 
 <p>Validation of the Random Forest model was performed using the validation data that was sub-setted from the training data.</p>
 
-<p><code>val_predict     &lt;- predict(mod3, validate)</code>
-<code>My_Confusion    &lt;- as.matrix(confusionMatrix(validate$classe, val_predict))</code>
-<code>accuracy_mod3   &lt;- confusionMatrix(validate$classe, val_predict)$overall[1]</code>  </p>
+<pre><code>`val_predict     &lt;- predict(mod3, validate)`
+`My_Confusion    &lt;- as.matrix(confusionMatrix(validate$classe, val_predict))`
+`accuracy_mod3   &lt;- confusionMatrix(validate$classe, val_predict)$overall[1]`  
+</code></pre>
 
 <p>The Random Forest model is able to predict all classe types and has an accuracy approaching 100% based on the validation data.</p>
 
-<p><code>mod3_predict    &lt;- predict(mod3, testingData)</code></p>
+<pre><code>`mod3_predict    &lt;- predict(mod3, testingData)`
+</code></pre>
 
 <h2>
 <a id="model-comparison" class="anchor" href="#model-comparison" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Model Comparison</strong>
@@ -243,68 +240,65 @@
 
 <p>Tables of the accuracy and prediction values are created for model comparison.</p>
 
-<p><code>Accuracy_Table          &lt;- as.data.frame(matrix(nrow=3,ncol=2))</code>
-<code>Method                  &lt;- c("Classification Tree", "Sub-setted Tree", "Random Forest")</code>
-<code>rownames(Accuracy_Table)&lt;-c("Model 1", "Model 2", "Model 3")</code>
-<code>colnames(Accuracy_Table)&lt;- c( "Method Used", "Accuracy")</code>
-<code>Accuracy_Table[,1]      &lt;- as.data.frame(Method)</code>
-<code>Accuracy_Table[1,2]     &lt;- as.data.frame(accuracy_mod1)</code>
-<code>Accuracy_Table[2,2]     &lt;- as.data.frame(accuracy_mod2)</code>
-<code>Accuracy_Table[3,2]     &lt;- as.data.frame(accuracy_mod3)</code></p>
-
-<p><code>Predict_Table           &lt;- as.data.frame(matrix(nrow=3,ncol=20))</code>
-<code>rownames(Predict_Table) &lt;-c("Model 1", "Model 2", "Model 3")</code>
-<code>Predict_Table[1, ]       &lt;- mod1_predict</code>
-<code>Predict_Table[2, ]       &lt;- mod2_predict</code>
-<code>Predict_Table[3, ]       &lt;- mod3_predict</code></p>
-
-<p><code>(Accuracy_Table)</code></p>
-
-<hr>
-
-<pre><code>             Method Used  Accuracy
+<pre><code>`Accuracy_Table          &lt;- as.data.frame(matrix(nrow=3,ncol=2))`
+`Method                  &lt;- c("Classification Tree", "Sub-setted Tree", "Random Forest")`
+`rownames(Accuracy_Table)&lt;-c("Model 1", "Model 2", "Model 3")`
+`colnames(Accuracy_Table)&lt;- c( "Method Used", "Accuracy")`
+`Accuracy_Table[,1]      &lt;- as.data.frame(Method)`
+`Accuracy_Table[1,2]     &lt;- as.data.frame(accuracy_mod1)`
+`Accuracy_Table[2,2]     &lt;- as.data.frame(accuracy_mod2)`
+`Accuracy_Table[3,2]     &lt;- as.data.frame(accuracy_mod3)`
+`Predict_Table           &lt;- as.data.frame(matrix(nrow=3,ncol=20))`
+`rownames(Predict_Table) &lt;-c("Model 1", "Model 2", "Model 3")`
+`Predict_Table[1, ]       &lt;- mod1_predict`
+`Predict_Table[2, ]       &lt;- mod2_predict`
+`Predict_Table[3, ]       &lt;- mod3_predict`
+`(Accuracy_Table)`
 </code></pre>
 
-<p>Model 1 Classification Tree 0.5661337
- Model 2     Sub-setted Tree 0.4779554
- Model 3       Random Forest 1.0000000</p>
+<hr>
+
+<ul>
+<li>                 Method Used  Accuracy</li>
+<li> Model 1 Classification Tree 0.5661337</li>
+<li> Model 2     Sub-setted Tree 0.4779554</li>
+<li> Model 3       Random Forest 1.0000000</li>
+</ul>
 
 <hr>
 
-<p><code>(Predict_Table)</code></p>
-
-<hr>
-
-<pre><code>     V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20
+<pre><code>`(Predict_Table)`
 </code></pre>
 
-<p>Model 1  A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C
-Model 2  C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D
-Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B</p>
-
 <hr>
+
+<ul>
+<li>         V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20</li>
+<li>Model 1  A  A  C  A  A  C  C  C  A   A   C   C   C   A   C   C   A   A   A   C</li>
+<li>Model 2  C  A  D  A  A  C  D  A  A   A   C   D   C   A   D   A   E   A   A   D</li>
+<li>Model 3  B  A  B  A  A  E  D  B  A   A   B   C   B   A   E   E   A   B   B   B
+***</li>
+</ul>
 
 <h2>
 <a id="plots-of-the-confusion-matrix-for-each-model" class="anchor" href="#plots-of-the-confusion-matrix-for-each-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plots of the Confusion Matrix for each model</h2>
 
-<p><code>library(reshape2)</code>
-<code>melted_mod1_confusion   &lt;- melt(mod1_confusion)</code>
-<code>melted_mod2_confusion   &lt;- melt(mod2_confusion)</code>
-<code>melted_My_Confusion     &lt;- melt(My_Confusion)</code>
-<code>colnames( melted_mod1_confusion ) &lt;- c("Classe", "Predicted","value")</code>
-<code>colnames( melted_mod2_confusion ) &lt;- c("Classe", "Predicted","value")</code>
-<code>colnames( melted_My_Confusion ) &lt;- c("Classe", "Predicted","value")</code>
-<code>library(gridExtra)</code>
-<code>g1 &lt;-ggplot(data = melted_mod1_confusion, aes(x=Classe, y=Predicted, fill=value)) +</code>
-  <code>geom_tile() + ggtitle("Model 1") + coord_fixed(ratio=1)</code></p>
-
-<p><code>g2 &lt;-ggplot(data = melted_mod2_confusion, aes(x=Classe, y=Predicted, fill=value)) +</code>
-  <code>geom_tile() + ggtitle("Model 2") + coord_fixed(ratio=1)</code></p>
-
-<p><code>g3 &lt;- ggplot(data = melted_My_Confusion, aes(x=Classe, y=Predicted, fill=value)) +</code>
-  <code>geom_tile() + ggtitle("Model 3") + coord_fixed(ratio=1)</code></p>
-
-<p><code>grid.arrange(g1, g2, g3, ncol = 3)</code></p>
+<pre><code>`library(reshape2)`
+`melted_mod1_confusion   &lt;- melt(mod1_confusion)`
+`melted_mod2_confusion   &lt;- melt(mod2_confusion)`
+`melted_My_Confusion     &lt;- melt(My_Confusion)`
+`colnames( melted_mod1_confusion ) &lt;- c("Classe", "Predicted","value")`
+`colnames( melted_mod2_confusion ) &lt;- c("Classe", "Predicted","value")`
+`colnames( melted_My_Confusion ) &lt;- c("Classe", "Predicted","value")`
+`library(gridExtra)`
+`g1 &lt;-ggplot(data = melted_mod1_confusion, aes(x=Classe, y=Predicted, fill=value)) + `
+`geom_tile() + ggtitle("Model 1") + coord_fixed(ratio=1)`
+`g2 &lt;-ggplot(data = melted_mod2_confusion, aes(x=Classe, y=Predicted, fill=value)) + `
+`geom_tile() + ggtitle("Model 2") + coord_fixed(ratio=1)`
+`g3 &lt;- ggplot(data = melted_My_Confusion, aes(x=Classe, y=Predicted, fill=value)) + `
+`geom_tile() + ggtitle("Model 3") + coord_fixed(ratio=1)`
+`grid.arrange(g1, g2, g3, ncol = 3)`
+</code></pre>
 
 <p><img src="https://github.com/DrJohnElliott/MachineLearning/blob/master/confusionMatices.png?raw=TRUE" alt="Confusion Matrices of the Models"></p>
 
